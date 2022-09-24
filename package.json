@@ -1,5 +1,5 @@
 {
-  "name": "ts-get",
+  "name": "@agnsu/ts-get",
   "version": "1.1.1",
   "description": "TypeScript helper type that returns the type of a property of an object path, and a function that returns the value of a property of an object path.",
   "main": "build/main/index.js",
