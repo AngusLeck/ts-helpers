@@ -56,4 +56,32 @@ type GET<T, P extends string> = P extends `${infer K}.${infer R}`
  */
 type Get<T, P extends Path<T>> = GET<T, P>;
 
-export { Get, GET };
+/**
+ *
+ * @param obj object to access
+ * @param path path to access in the object (e.g. `"a.b.c"`)
+ * @returns value at the path `Get<typeof obj, typeof path>`
+
+ * ```
+ * const doctor =  {
+ *   9: { Actor: "Christopher" },
+ *   10: { Actor: "David" },
+ *   11: { Actor: "Matt" },
+ *   12: { Actor: "Peter" },
+ *   13: { Actor: "Jodie" },
+ * } as const;
+ *
+ * const david = get(doctor, "10.Actor"); // "David"
+ * ```
+ */
+function get<T, P extends Path<T>>(obj: T, path: P): Get<T, P> {
+  const parts = path.split(".");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let current: any = obj;
+  for (const part of parts) {
+    current = current?.[part];
+  }
+  return current;
+}
+
+export { Get, GET, get };
