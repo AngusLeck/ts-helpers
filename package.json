@@ -1,0 +1,76 @@
+{
+  "name": "ts-get",
+  "version": "1.0.0",
+  "description": "TypeScript helper type that returns the type of a property of an object path",
+  "main": "build/main/index.js",
+  "typings": "build/main/index.d.ts",
+  "module": "build/module/index.js",
+  "repository": "https://github.com/AngusLeck/ts-get",
+  "license": "MIT",
+  "keywords": [],
+  "scripts": {
+    "describe": "npm-scripts-info",
+    "build": "run-s clean && run-p build:*",
+    "build:main": "tsc -p tsconfig.json",
+    "build:module": "tsc -p tsconfig.module.json",
+    "fix": "run-s fix:*",
+    "fix:prettier": "prettier \"src/**/*.ts\" --write",
+    "fix:lint": "eslint . --fix --max-warnings 0",
+    "lint": "run-s lint:*",
+    "lint:prettier": "prettier \"src/**/*.ts\" --list-different",
+    "lint:eslint": "eslint . --max-warnings 0",
+    "lint:typescript": "tsc",
+    "test": "jest --passWithNoTests",
+    "test:watch": "jest --passWithNoTests --watch",
+    "start": "run-s clean build:main && run-p \"build:main -- -w\" \"test:watch\"",
+    "version-bump": "standard-version",
+    "reset": "git clean -dfx && git reset --hard && yarn",
+    "clean": "trash build test",
+    "validate": "run-s lint test build",
+    "prepare-release": "run-s reset lint test build version-bump",
+    "release": "yarn prepare-release && git push --follow-tags origin master --no-verify && yarn publish --non-interactive",
+    "preinstall": "node -e \"if(process.env.npm_execpath.indexOf('yarn') === -1) throw new Error('ts-get must be installed with Yarn: https://yarnpkg.com/')\""
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "sh -c '[ $(git rev-parse --abbrev-ref HEAD) != \"master\" ] || ./go'"
+    }
+  },
+  "lint-staged": {
+    "*.{json,css,md}": "prettier --write",
+    "./src/**/*.{js,ts}": "eslint --fix --max-warnings 0"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "node_modules",
+      "build"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
+  "engines": {
+    "node": ">=8.9"
+  },
+  "devDependencies": {
+    "@bitjson/npm-scripts-info": "^1.0.0",
+    "@types/jest": "26.0.20",
+    "codecov": "^3.8.1",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "7.19.0",
+    "husky": "4.3.8",
+    "jest": "26.6.3",
+    "lint-staged": "10.5.3",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.2.1",
+    "standard-version": "^9.1.0",
+    "trash-cli": "^4.0.0",
+    "ts-jest": "26.5.0",
+    "typescript": "^4.1.3"
+  }
+}

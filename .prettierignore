@@ -1,0 +1,7 @@
+CHANGELOG.md
+node_modules/*
+build/*
+.*
+*.md
+*.json
+*.lock
