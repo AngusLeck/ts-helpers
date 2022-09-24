@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.3](https://github.com/AngusLeck/ts-get/compare/v1.1.2...v1.1.3) (2022-09-24)
+
+
+### Bug Fixes
+
+* make package public ([b548bf1](https://github.com/AngusLeck/ts-get/commit/b548bf1105676c2a133b53617c4e0542acffa313))
+
 ### [1.1.2](https://github.com/AngusLeck/ts-get/compare/v1.1.1...v1.1.2) (2022-09-24)
 
 
