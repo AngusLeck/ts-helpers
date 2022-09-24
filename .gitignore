@@ -6,6 +6,7 @@ src/**.js
 
 coverage
 .nyc_output
+.node-version
 *.log
 
 package-lock.json
