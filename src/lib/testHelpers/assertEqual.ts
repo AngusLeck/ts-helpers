@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-empty-function */
+
 /**
  * Checks if types are equal, example usage:
  * @fail const test: AssertEqual<{ a: string }, { a: "string" }> = true; // Type Error
