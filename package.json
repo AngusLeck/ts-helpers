@@ -27,7 +27,7 @@
     "reset": "git clean -dfx && git reset --hard && yarn",
     "clean": "trash build test",
     "validate": "run-s lint test build",
-    "prepare-release": "run-s reset lint test build version-bump",
+    "prepare-release": "run-s lint test build version-bump",
     "release": "yarn prepare-release && git push --follow-tags origin main --no-verify && yarn publish --non-interactive",
     "preinstall": "node -e \"if(process.env.npm_execpath.indexOf('yarn') === -1) throw new Error('ts-get must be installed with Yarn: https://yarnpkg.com/')\""
   },
