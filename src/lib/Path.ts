@@ -1,21 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
-type Obj = {
-  [key in any]: any;
-};
-
-/**
- * Just works like `${T}` but it doesn't complain if you give it eg a symbol.
- */
-type ToString<T> = T extends
-  | string
-  | number
-  | bigint
-  | boolean
-  | null
-  | undefined
-  ? `${T}`
-  : undefined;
+import { Obj } from "./Obj";
+import { ToString } from "./ToString";
 
 type RecursivePath<K, T> = T extends Obj
   ? {
