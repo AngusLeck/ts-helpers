@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.1](https://github.com/AngusLeck/ts-get/compare/v1.1.0...v1.1.1) (2022-09-24)
+
+
+### Bug Fixes
+
+* release script should specify branch main not master ([e53c9f9](https://github.com/AngusLeck/ts-get/commit/e53c9f9071d0ce98961ee29ecf8e9b0a54a855fb))
+
 ## 1.1.0 (2022-09-24)
 
 
