@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/AngusLeck/ts-helpers/compare/v1.1.3...v1.2.0) (2022-10-04)
+
+
+### Features
+
+* add PathsPresent and rename package ([14af6a4](https://github.com/AngusLeck/ts-helpers/commit/14af6a46297db388a66e957a2693600e4c67471c))
+
 ### [1.1.3](https://github.com/AngusLeck/ts-get/compare/v1.1.2...v1.1.3) (2022-09-24)
 
 
