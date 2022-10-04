@@ -1,3 +1,9 @@
+##
+Features a number of deeply nested helpers that provide type safety on object paths
+- Get
+- PathsPresent
+- Path
+
 ## Development
 
 ```sh
