@@ -6,6 +6,10 @@ export type PathsPresent<T, P extends Path<T>> = UnionToIntersection<
   PathsPresentRecursive<T, P>
 >;
 
+export type PathsPresentUnsafe<T, P extends string> = UnionToIntersection<
+  PathsPresentRecursive<T, P>
+>;
+
 type PathsPresentRecursive<
   T,
   P extends string
