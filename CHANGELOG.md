@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.2](https://github.com/AngusLeck/ts-helpers/compare/v1.2.1...v1.2.2) (2022-10-06)
+
+
+### Bug Fixes
+
+* don't recursively collapse ([cf3e0a6](https://github.com/AngusLeck/ts-helpers/commit/cf3e0a644eb7d722ee15f1a0c1932df6e0c91df6))
+
 ### [1.2.1](https://github.com/AngusLeck/ts-helpers/compare/v1.2.0...v1.2.1) (2022-10-05)
 
 ## [1.2.0](https://github.com/AngusLeck/ts-helpers/compare/v1.1.3...v1.2.0) (2022-10-04)
