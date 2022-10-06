@@ -1,7 +1,7 @@
-export type Collapse<T> = T extends {
-  [K in keyof T]: unknown;
-}
+import { Obj } from "./Obj";
+
+export type Collapse<T> = T extends Obj
   ? {
-      [K in keyof T]: Collapse<T[K]>;
+      [K in keyof T]: T[K];
     }
   : T;

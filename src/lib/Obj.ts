@@ -3,6 +3,10 @@
 /**
  * Not nullish and not primitive
  */
-export type Obj = {
-  [key in any]: any;
-};
+export type Obj =
+  | {
+      [key in any]: any;
+    }
+  | {
+      [key in any]?: any;
+    };

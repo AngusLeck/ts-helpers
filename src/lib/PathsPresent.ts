@@ -1,22 +1,23 @@
 import { GetKey } from "./GetKey";
+import { Intersection } from "./Intersection";
 import { Path } from "./Path";
 import { UnionToIntersection } from "./UnionToIntersection";
 
-export type PathsPresent<T, P extends Path<T>> = UnionToIntersection<
+export type PathsPresent<T, P extends Path<T>> = Present<T, P>;
+
+export type Present<T, P extends string> = UnionToIntersection<
   PathsPresentRecursive<T, P>
 >;
 
-export type PathsPresentUnsafe<T, P extends string> = UnionToIntersection<
-  PathsPresentRecursive<T, P>
+type PathsPresentRecursive<T, P extends string> = UnionToIntersection<
+  P extends `${infer K}.${infer R}`
+    ? ReplaceKeyAndMakeNonNullable<T, K, PathsPresentRecursive<GetKey<T, K>, R>>
+    : ReplaceKeyAndMakeNonNullable<T, P, GetKey<T, P>>
 >;
 
-type PathsPresentRecursive<
+type ReplaceKeyAndMakeNonNullable<T, K extends string, V> = Intersection<
   T,
-  P extends string
-> = P extends `${infer K}.${infer R}`
-  ? ReplaceKeyAndMakeNonNullable<T, K, PathsPresentRecursive<GetKey<T, K>, R>>
-  : ReplaceKeyAndMakeNonNullable<T, P, GetKey<T, P>>;
-
-type ReplaceKeyAndMakeNonNullable<T, K extends string, V> = T & {
-  [K1 in K]-?: NonNullable<V>;
-};
+  {
+    [K1 in K]-?: NonNullable<V>;
+  }
+>;
