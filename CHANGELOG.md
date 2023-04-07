@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/AngusLeck/ts-helpers/compare/v1.2.2...v1.3.0) (2023-04-07)
+
+
+### Features
+
+* add functions keys ([9fb6a9b](https://github.com/AngusLeck/ts-helpers/commit/9fb6a9b6d3d764ace599972066c83665341395c2))
+
 ### [1.2.2](https://github.com/AngusLeck/ts-helpers/compare/v1.2.1...v1.2.2) (2022-10-06)
 
 
