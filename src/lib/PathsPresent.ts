@@ -1,3 +1,4 @@
+import { get } from "./Get";
 import { GetKey } from "./GetKey";
 import { Intersection } from "./Intersection";
 import { Path } from "./Path";
@@ -21,3 +22,10 @@ type ReplaceKeyAndMakeNonNullable<T, K extends string, V> = Intersection<
     [K1 in K]-?: NonNullable<V>;
   }
 >;
+
+export function pathsPresent<T, P extends Path<T>>(
+  input: T,
+  ...paths: P[]
+): input is Intersection<Present<T, P>, T> {
+  return paths.every((path) => get(input, path) != null);
+}
