@@ -1,23 +1,26 @@
-import { GetKey } from "./GetKey";
-import { Intersection } from "./Intersection";
+import { GET, get } from "./Get";
+import { Narrow } from "./NarrowPath";
 import { Path } from "./Path";
-import { UnionToIntersection } from "./UnionToIntersection";
 
 export type PathsPresent<T, P extends Path<T>> = Present<T, P>;
 
-export type Present<T, P extends string> = UnionToIntersection<
-  PathsPresentRecursive<T, P>
->;
+export type Present<T, P extends string> = Narrow<T, P, NonNullable<GET<T, P>>>;
 
-type PathsPresentRecursive<T, P extends string> = UnionToIntersection<
-  P extends `${infer K}.${infer R}`
-    ? ReplaceKeyAndMakeNonNullable<T, K, PathsPresentRecursive<GetKey<T, K>, R>>
-    : ReplaceKeyAndMakeNonNullable<T, P, GetKey<T, P>>
->;
+export function pathsPresent<T, P extends Path<T>>(
+  input: T,
+  ...paths: P[]
+): input is Present<T, P> {
+  return paths.every((path) => get(input, path) != null);
+}
 
-type ReplaceKeyAndMakeNonNullable<T, K extends string, V> = Intersection<
-  T,
-  {
-    [K1 in K]-?: NonNullable<V>;
+export function assertAllPresent<T, P extends Path<T>>(
+  input: T,
+  ...paths: P[]
+): asserts input is Present<T, P> {
+  const absent = paths.filter((path) => get(input, path) == null);
+  if (absent.length) {
+    throw new TypeError(
+      `Some required paths missing from ${input}, absent paths: ${absent}`
+    );
   }
->;
+}
