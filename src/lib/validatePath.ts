@@ -3,6 +3,7 @@ import { GetKey } from "./GetKey";
 import { Intersection } from "./Intersection";
 import { Path } from "./Path";
 import { UnionToIntersection } from "./UnionToIntersection";
+import { assert } from "./assert";
 
 export type NarrowPath<
   T,
@@ -27,10 +28,19 @@ type ReplaceKey<T, K extends string, V> = Intersection<
   }
 >;
 
-export function validatePath<T, P extends Path<T>, V extends GET<T, P>>(
+export function checkPath<T, P extends Path<T>, V extends GET<T, P>>(
   input: T,
   path: P,
   guard: (val: GET<T, P>) => val is V
 ): input is NarrowPath<T, P, V> {
   return guard(get(input, path));
+}
+
+export function validatePath<T, P extends Path<T>, V extends GET<T, P>>(
+  input: T,
+  path: P,
+  guard: (val: GET<T, P>) => val is V,
+  errorMessage?: string
+): asserts input is NarrowPath<T, P, V> {
+  assert(get(input, path), guard, errorMessage);
 }
