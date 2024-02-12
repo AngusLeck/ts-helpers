@@ -1,4 +1,4 @@
-import { checkPath, validatePath } from "./validatePath";
+import { deepTypeGuard, deepAssert } from "./deepAssert";
 
 const isNumber = (val: unknown): val is number => typeof val === "number";
 
@@ -6,22 +6,22 @@ const isString = (val: unknown): val is string => typeof val === "string";
 
 test("Should return true for a simple path and a satisfied guard condition", () => {
   const input: TestType1 = { name: "John", age: 30 };
-  expect(checkPath(input, "age", isNumber)).toBe(true);
-  expect(() => validatePath(input, "age", isNumber)).not.toThrow();
+  expect(deepTypeGuard(input, "age", isNumber)).toBe(true);
+  expect(() => deepAssert(input, "age", isNumber)).not.toThrow();
 });
 
 test("Should return false for a simple path and an unsatisfied guard condition", () => {
   const input: TestType1 = { name: "Jane", age: "18" };
-  expect(checkPath(input, "age", isNumber)).toBe(false);
-  expect(() => validatePath(input, "age", isNumber)).toThrow();
+  expect(deepTypeGuard(input, "age", isNumber)).toBe(false);
+  expect(() => deepAssert(input, "age", isNumber)).toThrow();
 });
 
 test("Should return true for a nested object path and a satisfied guard condition", () => {
   const input: TestType2 = {
     user: { name: "Jake", details: { age: 25, city: "New York" } },
   };
-  expect(checkPath(input, "user.details.age", isNumber)).toBe(true);
-  expect(() => validatePath(input, "user.details.age", isNumber)).not.toThrow();
+  expect(deepTypeGuard(input, "user.details.age", isNumber)).toBe(true);
+  expect(() => deepAssert(input, "user.details.age", isNumber)).not.toThrow();
 });
 
 test("Should return true for complex guard logic that is satisfied", () => {
@@ -35,15 +35,17 @@ test("Should return true for complex guard logic that is satisfied", () => {
     0 < val.count &&
     val.valid === true;
 
-  expect(checkPath(input, "data", objectValidator)).toBe(true);
-  expect(() => validatePath(input, "data", objectValidator)).not.toThrow();
+  expect(deepTypeGuard(input, "data", objectValidator)).toBe(true);
+  expect(() => deepAssert(input, "data", objectValidator)).not.toThrow();
 });
 
 test("Should handle paths leading to undefined values correctly", () => {
   const input: TestType4 = { exists: { someProperty: "value" } };
-  expect(checkPath(input, "doesNotExist.someProperty", isString)).toBe(false);
+  expect(deepTypeGuard(input, "doesNotExist.someProperty", isString)).toBe(
+    false
+  );
   expect(() =>
-    validatePath(input, "doesNotExist.someProperty", isString)
+    deepAssert(input, "doesNotExist.someProperty", isString)
   ).toThrow();
 });
 
@@ -56,8 +58,8 @@ test("Should correctly type-guard when guard checks for a specific object struct
     "passed" in val &&
     val["passed" as keyof typeof val] === true;
 
-  expect(checkPath(input, "nested", objectValidator)).toBe(true);
-  expect(() => validatePath(input, "nested", objectValidator)).not.toThrow();
+  expect(deepTypeGuard(input, "nested", objectValidator)).toBe(true);
+  expect(() => deepAssert(input, "nested", objectValidator)).not.toThrow();
 });
 
 interface TestType1 {
