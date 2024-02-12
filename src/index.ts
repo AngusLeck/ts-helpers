@@ -8,3 +8,4 @@ export * from "./lib/ToString";
 export * from "./lib/Intersection";
 export * from "./lib/validatePath";
 export * from "./lib/assert";
+export * from "./lib/NarrowPath";

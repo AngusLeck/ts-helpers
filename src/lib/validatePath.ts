@@ -1,38 +1,13 @@
-import { GET, get } from "./Get";
-import { GetKey } from "./GetKey";
-import { Intersection } from "./Intersection";
-import { Path } from "./Path";
-import { UnionToIntersection } from "./UnionToIntersection";
 import { assert } from "./assert";
-
-export type NarrowPath<
-  T,
-  P extends Path<T>,
-  V extends GET<T, P>
-> = Intersection<PresentValue<T, P, V>, T>;
-
-type PresentValue<T, P extends string, V> = UnionToIntersection<
-  PathsPresentRecursive<T, P, V>
->;
-
-type PathsPresentRecursive<T, P extends string, V> = UnionToIntersection<
-  P extends `${infer K}.${infer R}`
-    ? ReplaceKey<T, K, PathsPresentRecursive<GetKey<T, K>, R, V>>
-    : ReplaceKey<T, P, V>
->;
-
-type ReplaceKey<T, K extends string, V> = Intersection<
-  T,
-  {
-    [K1 in K]-?: V;
-  }
->;
+import { GET, get } from "./Get";
+import { Narrow } from "./NarrowPath";
+import { Path } from "./Path";
 
 export function checkPath<T, P extends Path<T>, V extends GET<T, P>>(
   input: T,
   path: P,
   guard: (val: GET<T, P>) => val is V
-): input is NarrowPath<T, P, V> {
+): input is Narrow<T, P, V> {
   return guard(get(input, path));
 }
 
@@ -41,6 +16,6 @@ export function validatePath<T, P extends Path<T>, V extends GET<T, P>>(
   path: P,
   guard: (val: GET<T, P>) => val is V,
   errorMessage?: string
-): asserts input is NarrowPath<T, P, V> {
+): asserts input is Narrow<T, P, V> {
   assert(get(input, path), guard, errorMessage);
 }
