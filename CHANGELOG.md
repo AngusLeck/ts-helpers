@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/AngusLeck/ts-helpers/compare/v1.3.0...v1.4.0) (2024-02-12)
+
+
+### Features
+
+* assert ([d1cb3dd](https://github.com/AngusLeck/ts-helpers/commit/d1cb3ddb0e4e433eb4cc092124e32b4076bdf31d))
+* pathsPresent ([9be9867](https://github.com/AngusLeck/ts-helpers/commit/9be98675afa56481b65a6c1a168978328e6cb4ee))
+* validatePath ([761e91c](https://github.com/AngusLeck/ts-helpers/commit/761e91c6fea9f4ab0619d88311f8a8b4638d2757))
+
 ## [1.3.0](https://github.com/AngusLeck/ts-helpers/compare/v1.2.2...v1.3.0) (2023-04-07)
 
 
