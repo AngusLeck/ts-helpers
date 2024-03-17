@@ -9,3 +9,4 @@ export * from "./lib/Intersection";
 export * from "./lib/deepAssert";
 export * from "./lib/assert";
 export * from "./lib/NarrowPath";
+export * from "./lib/higherOrderFilters/filter";
