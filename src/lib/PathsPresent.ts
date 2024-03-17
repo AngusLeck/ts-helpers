@@ -20,7 +20,9 @@ export function assertAllPresent<T, P extends Path<T>>(
   const absent = paths.filter((path) => get(input, path) == null);
   if (absent.length) {
     throw new TypeError(
-      `Some required paths missing from ${input}, absent paths: ${absent}`
+      `Some required paths missing from ${JSON.stringify(
+        input
+      )}, absent paths: ${absent}`
     );
   }
 }

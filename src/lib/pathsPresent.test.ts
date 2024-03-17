@@ -1,5 +1,5 @@
 import { Path } from "./Path";
-import { pathsPresent } from "./PathsPresent";
+import { assertAllPresent, pathsPresent } from "./PathsPresent";
 
 const testScenarios = [
   {
@@ -70,4 +70,15 @@ describe("pathsPresent", () => {
       expectedResult
     );
   });
+});
+
+test("error message", () => {
+  const input = { a: { b: { c: {} } } };
+  const paths = ["a.b", "a.b.c", "a.b.c.d", "hello.yo"];
+
+  expect(() =>
+    assertAllPresent(input, ...(paths as Path<typeof input>[]))
+  ).toThrowErrorMatchingInlineSnapshot(
+    `"Some required paths missing from [object Object], absent paths: a.b.c.d,hello.yo"`
+  );
 });
