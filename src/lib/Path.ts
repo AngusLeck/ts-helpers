@@ -1,7 +1,10 @@
+import { Func } from "./Func";
 import { Obj } from "./Obj";
 import { ToString } from "./ToString";
 
-type RecursivePath<K, T> = T extends Obj
+type RecursivePath<K, T> = T extends Func
+  ? ToString<K>
+  : T extends Obj
   ? {
       [K1 in keyof T]:
         | ToString<K>
