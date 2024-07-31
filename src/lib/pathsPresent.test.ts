@@ -79,6 +79,6 @@ test("error message", () => {
   expect(() =>
     assertAllPresent(input, ...(paths as Path<typeof input>[]))
   ).toThrowErrorMatchingInlineSnapshot(
-    `"Some required paths missing from [object Object], absent paths: a.b.c.d,hello.yo"`
+    `"Some required paths missing from {\\"a\\":{\\"b\\":{\\"c\\":{}}}}, absent paths: a.b.c.d,hello.yo"`
   );
 });
