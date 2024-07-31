@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/AngusLeck/ts-helpers/compare/v1.4.1...v1.5.0) (2024-07-31)
+
+
+### Features
+
+* enhance path to handle function values ([d335e80](https://github.com/AngusLeck/ts-helpers/commit/d335e8080fc79f63d9fe2d3a777ec11f7ff1e798))
+* filters ([753b5cd](https://github.com/AngusLeck/ts-helpers/commit/753b5cd99d0cc3c3966af17c1bb34329620d3302))
+* function path ([27cfb72](https://github.com/AngusLeck/ts-helpers/commit/27cfb7237666d55cdca5d12c0f437086f961f678))
+
+
+### Bug Fixes
+
+* better error message ([bf77b39](https://github.com/AngusLeck/ts-helpers/commit/bf77b39911792d02c89553e8bb0c6b4821ae213c))
+
 ### [1.4.1](https://github.com/AngusLeck/ts-helpers/compare/v1.4.0...v1.4.1) (2024-02-12)
 
 ## [1.4.0](https://github.com/AngusLeck/ts-helpers/compare/v1.3.0...v1.4.0) (2024-02-12)
