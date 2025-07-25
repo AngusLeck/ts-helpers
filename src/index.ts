@@ -4,6 +4,7 @@ export * from "./lib/testHelpers";
 export * from "./lib/UnionToIntersection";
 export * from "./lib/PathsPresent";
 export * from "./lib/Path";
+export * from "./lib/PickPaths";
 export * from "./lib/ToString";
 export * from "./lib/Intersection";
 export * from "./lib/deepAssert";
