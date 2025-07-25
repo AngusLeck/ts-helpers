@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.6.0](https://github.com/AngusLeck/ts-helpers/compare/v1.5.0...v1.6.0) (2025-07-25)
+
+
+### Features
+
+* PickPaths ([e0b7f20](https://github.com/AngusLeck/ts-helpers/commit/e0b7f20c9d0b1fb8f8a152de886f8270de88f14e))
+
 ## [1.5.0](https://github.com/AngusLeck/ts-helpers/compare/v1.4.1...v1.5.0) (2024-07-31)
 
 
