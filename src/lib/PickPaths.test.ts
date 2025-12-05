@@ -24,7 +24,7 @@ describe("PickPaths", () => {
 
     // Test single nested path
     assertEqual<PickPaths<User, "profile.name">, { profile: { name: string } }>(
-      true
+      true,
     );
 
     // Test mixed flat and nested paths
@@ -83,7 +83,7 @@ describe("PickPaths", () => {
 
     // Test optional property
     assertEqual<PickPaths<SimpleOptional, "a">, { a: string | undefined }>(
-      true
+      true,
     );
 
     // Test mixed
@@ -124,7 +124,7 @@ describe("PickPaths", () => {
     }
 
     assertEqual<PickPaths<ArrayContainer, "items.0">, { items: { 0: string } }>(
-      true
+      true,
     );
 
     assertEqual<

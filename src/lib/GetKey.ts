@@ -7,7 +7,7 @@ export type GetKey<T, K extends string | number> = T extends {
 }
   ? V
   : T extends {
-      [k in K]?: infer V;
-    }
-  ? V | undefined
-  : undefined;
+        [k in K]?: infer V;
+      }
+    ? V | undefined
+    : undefined;

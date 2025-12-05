@@ -12,3 +12,4 @@ export * from "./lib/assert";
 export * from "./lib/NarrowPath";
 export * from "./lib/higherOrderFilters/filter";
 export * from "./lib/FunctionPath";
+export * from "./lib/PathEndingIn";

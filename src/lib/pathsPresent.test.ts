@@ -67,7 +67,7 @@ const testScenarios = [
 describe("pathsPresent", () => {
   it.each(testScenarios)("$description", ({ input, paths, expectedResult }) => {
     expect(pathsPresent(input, ...(paths as Path<typeof input>[]))).toBe(
-      expectedResult
+      expectedResult,
     );
   });
 });
@@ -77,8 +77,8 @@ test("error message", () => {
   const paths = ["a.b", "a.b.c", "a.b.c.d", "hello.yo"];
 
   expect(() =>
-    assertAllPresent(input, ...(paths as Path<typeof input>[]))
+    assertAllPresent(input, ...(paths as Path<typeof input>[])),
   ).toThrowErrorMatchingInlineSnapshot(
-    `"Some required paths missing from {\\"a\\":{\\"b\\":{\\"c\\":{}}}}, absent paths: a.b.c.d,hello.yo"`
+    `"Some required paths missing from {\\"a\\":{\\"b\\":{\\"c\\":{}}}}, absent paths: a.b.c.d,hello.yo"`,
   );
 });

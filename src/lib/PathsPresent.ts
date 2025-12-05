@@ -21,8 +21,8 @@ export function assertAllPresent<T, P extends Path<T>>(
   if (absent.length) {
     throw new TypeError(
       `Some required paths missing from ${JSON.stringify(
-        input
-      )}, absent paths: ${absent}`
+        input,
+      )}, absent paths: ${absent}`,
     );
   }
 }
