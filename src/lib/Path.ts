@@ -6,9 +6,15 @@ import { Obj } from "./Obj";
 import { PrependPath } from "./PrependPath";
 
 /**
- * Extract numeric string keys from a tuple type (fixed indices only).
+ * Extract the fixed numeric indices from a tuple (excluding array prototype keys).
+ * Uses Exclude to filter out inherited array methods, leaving only tuple-specific indices.
+ * [string, ...number[]] -> "0"
+ * [string, boolean, ...number[]] -> "0" | "1"
+ * string[] -> never
  */
-type NumericKeys<T> = Extract<keyof T, `${number}`>;
+type TupleKeys<T> = T extends readonly unknown[]
+  ? Exclude<keyof T, keyof unknown[]>
+  : never;
 
 /**
  * Increment lookup table for counting fixed tuple elements.
@@ -43,7 +49,7 @@ type Increment = [
  * Returns the count of fixed elements (0 for plain arrays, N for [T1, T2, ...TN, ...rest[]]).
  */
 type CountFixed<T extends readonly unknown[], N extends number = 0> =
-  `${N}` extends NumericKeys<T>
+  `${N}` extends TupleKeys<T>
     ? N extends keyof Increment
       ? CountFixed<T, Increment[N]>
       : N // Hit the limit (20+), return current count
@@ -56,7 +62,7 @@ type NonZeroDigit = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
  * Includes specific literals for autocomplete + pattern for acceptance.
  */
 type RestTupleIndexBase<T extends readonly unknown[]> =
-  | NumericKeys<T> // Fixed keys (show in autocomplete)
+  | TupleKeys<T> // Fixed keys (show in autocomplete)
   | `${CountFixed<T>}` // First rest index (show in autocomplete)
   | `${NonZeroDigit}${string}`; // Pattern for accepting any numeric >= 10
 
@@ -66,7 +72,7 @@ type RestTupleIndexBase<T extends readonly unknown[]> =
  * - Rest tuples ([string, ...number[]]): suggests fixed keys + first rest index
  */
 type DynamicArrayIndex<T extends readonly unknown[]> =
-  NumericKeys<T> extends never
+  TupleKeys<T> extends never
     ? ArrayIndex // Plain array - suggests "0"
     : RestTupleIndexBase<T> & `${number}`; // Rest tuple - suggests specific indices
 
