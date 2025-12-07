@@ -1,12 +1,5 @@
-import {
-  ArrayElement,
-  DecrementDepth,
-  Depth,
-  IsDepthExhausted,
-  IsDynamicArray,
-  IsLeafType,
-  KeyToString,
-} from "./Path";
+import { ArrayElement, IsDynamicArray, IsLeafType, KeyToString } from "./Path";
+import { DecrementDepth, Depth, IsDepthExhausted } from "./Depth";
 
 /**
  * Internal path builder that only produces paths ending in type Target.

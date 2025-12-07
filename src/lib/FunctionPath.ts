@@ -1,4 +1,4 @@
-import { Depth } from "./Path";
+import { Depth } from "./Depth";
 import { PathEndingIn } from "./PathEndingIn";
 
 /**

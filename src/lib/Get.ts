@@ -1,34 +1,5 @@
 import { Path } from "./Path";
-
-/**
- * Splits a dot-notation path into a tuple of keys.
- * "a.b.c" -> ["a", "b", "c"]
- */
-type SplitPath<P extends string> = P extends `${infer Head}.${infer Rest}`
-  ? [Head, ...SplitPath<Rest>]
-  : [P];
-
-/**
- * Internal helper to get value type at a key, handling optional properties.
- * Array element access always includes undefined since the element may not exist.
- */
-type GetKeyInternal<T, K extends string> = K extends keyof T
-  ? T[K]
-  : T extends readonly unknown[]
-    ? K extends `${number}`
-      ? T[number] | undefined
-      : undefined
-    : undefined;
-
-/**
- * Recursively traverses an object type following a path tuple.
- * Uses distributive conditional to handle union types properly.
- */
-type GetByPathTuple<T, Parts extends string[]> = T extends unknown
-  ? Parts extends [infer Head extends string, ...infer Rest extends string[]]
-    ? GetByPathTuple<GetKeyInternal<T, Head>, Rest>
-    : T
-  : never;
+import { GetKey } from "./GetKey";
 
 /**
  * Like Get returns the type of the value at a path of T.
@@ -48,7 +19,9 @@ type GetByPathTuple<T, Parts extends string[]> = T extends unknown
  * type David = GET<Doctor, "10.Actor">; // "David"
  * ```
  */
-type GET<T, P extends string> = GetByPathTuple<T, SplitPath<P>>;
+type GET<T, P extends string> = P extends `${infer K}.${infer R}`
+  ? GET<GetKey<T, K>, R>
+  : GetKey<T, P>;
 
 /**
  * Returns the type of the value at a path of T.
@@ -108,4 +81,4 @@ function get<T, P extends Path<T> & string>(obj: T, path: P): Get<T, P> {
   return current;
 }
 
-export { Get, GET, GetByPathTuple, SplitPath, get };
+export { Get, GET, get };
