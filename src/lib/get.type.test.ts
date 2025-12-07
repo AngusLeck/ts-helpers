@@ -379,3 +379,14 @@ describe("FunctionPath<T, Depth<N>>", () => {
     assertEqual<Paths, never>(true);
   });
 });
+
+describe("union type handling", () => {
+  it("should properly handle unions with mixed object and array types", () => {
+    type ObjectArrayUnion = { 0: "zero" } | number[];
+    assertEqual<Get<ObjectArrayUnion, "0">, "zero" | number | undefined>(true);
+    type ObjectTupleUnion = { 0: "zero" } | [number];
+    assertEqual<Get<ObjectTupleUnion, "0">, "zero" | number>(true);
+    type ArrayTupleUnion = ["zero"] | number[];
+    assertEqual<Get<ArrayTupleUnion, "0">, "zero" | number | undefined>(true);
+  });
+});
