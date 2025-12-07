@@ -102,27 +102,38 @@ describe("experimental/PathSuggestions", () => {
       assertExtends<"indexed.<string>", PathSuggestions<TestModel>>(true);
     });
 
-    it("suggests <number> placeholder for number index", () => {
-      assertExtends<"numIndexed.<number>", PathSuggestions<TestModel>>(true);
+    it("suggests '0' for number index (a valid path)", () => {
+      assertExtends<"numIndexed.0", PathSuggestions<TestModel>>(true);
     });
 
     it("does not suggest arbitrary keys", () => {
       assertExtends<"indexed.arbitrary", PathSuggestions<TestModel>>(false);
       assertExtends<"indexed.known", PathSuggestions<TestModel>>(false); // absorbed by index signature
+      assertExtends<"numIndexed.1", PathSuggestions<TestModel>>(false); // only "0" is suggested
       assertExtends<"numIndexed.123", PathSuggestions<TestModel>>(false);
     });
   });
 
   describe("index signature placeholder collision", () => {
-    interface WithCollision {
+    interface WithStringCollision {
       "<string>": number;
       other: string;
       [key: string]: string | number;
     }
 
     it("does not suggest <string> if already a key", () => {
-      assertExtends<"<string>", PathSuggestions<WithCollision>>(true); // as explicit key
+      assertExtends<"<string>", PathSuggestions<WithStringCollision>>(true); // as explicit key
       // The placeholder logic should not add a duplicate
+    });
+
+    interface WithNumberCollision {
+      0: string;
+      [key: number]: string;
+    }
+
+    it("does not duplicate 0 if already an explicit key", () => {
+      assertExtends<"0", PathSuggestions<WithNumberCollision>>(true); // as explicit key
+      // Should only appear once, not twice
     });
   });
 

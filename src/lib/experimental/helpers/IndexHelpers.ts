@@ -48,11 +48,12 @@ export type StringIndexPlaceholder<T> =
     : never;
 
 /**
- * Returns "<number>" if T has a number index signature and "<number>" is not already an explicit key.
+ * Returns "0" if T has a number index signature and "0" is not already an explicit key.
+ * We use "0" instead of "<number>" so the suggestion is also a valid path.
  */
 export type NumberIndexPlaceholder<T> =
   HasNumberIndex<T> extends true
-    ? "<number>" extends ExplicitKeys<T>
-      ? never // "<number>" is already an explicit key
-      : "<number>"
+    ? "0" extends ExplicitKeys<T>
+      ? never // "0" is already an explicit key
+      : "0"
     : never;
