@@ -1,17 +1,9 @@
 import { ArrayElement } from "./ArrayElement";
 import { ArrayIndex } from "./ArrayIndex";
-import { DecrementDepth, Depth, IsDepthExhausted } from "./Depth";
-import { IsLeafType } from "./IsLeafType";
+import { DecrementDepth, Depth } from "./Depth";
+import { ShouldTerminatePathing } from "./ShouldTerminatePathing";
 import { Obj } from "./Obj";
 import { PrependPath } from "./PrependPath";
-
-/** Stop if the depth is exhausted or the type is a leaf type. */
-type ShouldTerminatePathing<T, D extends unknown[]> =
-  IsDepthExhausted<D> extends true
-    ? true
-    : IsLeafType<T> extends true
-      ? true
-      : false;
 
 /**
  * Internal path builder that recurses through object properties.

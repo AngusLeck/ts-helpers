@@ -1,8 +1,10 @@
 import { ArrayElement } from "./ArrayElement";
-import { IsDynamicArray } from "./IsDynamicArray";
-import { DecrementDepth, Depth, IsDepthExhausted } from "./Depth";
-import { IsLeafType } from "./IsLeafType";
-import { ToString } from "./ToString";
+import { DecrementDepth, Depth } from "./Depth";
+import { PrependPath } from "./PrependPath";
+import { Obj } from "./Obj";
+import { ArrayIndex } from "./ArrayIndex";
+import { ShouldTerminatePathing } from "./ShouldTerminatePathing";
+import { NonEmptyString } from "./NonEmptyString";
 
 /**
  * Internal path builder that only produces paths ending in type Target.
@@ -12,72 +14,38 @@ type BuildPathsEndingIn<
   Target,
   D extends unknown[],
   Prefix extends string = "",
-> =
-  IsDepthExhausted<D> extends true
+> = T extends Target
+  ? NonEmptyString<Prefix>
+  : ShouldTerminatePathing<T, D> extends true
     ? never
-    : IsLeafType<T> extends true
-      ? T extends Target
-        ? Prefix
-        : never
-      : IsDynamicArray<T> extends true
-        ? // For arrays: check if array itself matches, or if elements match
-            | (T extends Target ? (Prefix extends "" ? never : Prefix) : never)
-            | (ArrayElement<T> extends Target
-                ? Prefix extends ""
-                  ? "0"
-                  : `${Prefix}.0`
-                : never)
-            | BuildPathsEndingIn<
-                ArrayElement<T>,
-                Target,
-                DecrementDepth<D>,
-                Prefix extends "" ? "0" : `${Prefix}.0`
-              >
-        : T extends readonly unknown[]
-          ? // Tuple handling
-              | (T extends Target
-                  ? Prefix extends ""
-                    ? never
-                    : Prefix
-                  : never)
-              | {
-                  [K in keyof T & `${number}`]:
-                    | (T[K & keyof T] extends Target
-                        ? Prefix extends ""
-                          ? K
-                          : `${Prefix}.${K}`
-                        : never)
-                    | BuildPathsEndingIn<
-                        T[K & keyof T],
-                        Target,
-                        DecrementDepth<D>,
-                        Prefix extends "" ? K : `${Prefix}.${K}`
-                      >;
-                }[keyof T & `${number}`]
-          : T extends object
-            ? // Regular object
-                | (T extends Target
-                    ? Prefix extends ""
-                      ? never
-                      : Prefix
-                    : never)
-                | {
-                    [K in keyof T & (string | number)]:
-                      | (T[K] extends Target
-                          ? Prefix extends ""
-                            ? ToString<K>
-                            : `${Prefix}.${ToString<K>}`
-                          : never)
-                      | BuildPathsEndingIn<
-                          T[K],
-                          Target,
-                          DecrementDepth<D>,
-                          Prefix extends ""
-                            ? ToString<K>
-                            : `${Prefix}.${ToString<K>}`
-                        >;
-                  }[keyof T & (string | number)]
-            : never;
+    : T extends readonly unknown[] // Array
+      ? number extends T["length"] // Dynamic array
+        ? // ArrayIndex keeps "0" distinct so autocomplete shows it
+          BuildPathsEndingIn<
+            ArrayElement<T>,
+            Target,
+            DecrementDepth<D>,
+            PrependPath<ArrayIndex, Prefix>
+          >
+        : {
+            // Tuple
+            [K in keyof T & `${number}`]: BuildPathsEndingIn<
+              T[K],
+              Target,
+              DecrementDepth<D>,
+              PrependPath<K, Prefix>
+            >;
+          }[keyof T & `${number}`]
+      : T extends Obj
+        ? {
+            [K in keyof T]: BuildPathsEndingIn<
+              T[K],
+              Target,
+              DecrementDepth<D>,
+              PrependPath<K, Prefix>
+            >;
+          }[keyof T]
+        : never;
 
 /**
  * Generates a union of all valid dot-notation paths for type T that terminate in type Target.

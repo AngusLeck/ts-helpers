@@ -1,6 +1,6 @@
 import { ToString } from "./ToString";
 
 /** Prepend a path to a key */
-export type PrependPath<Key, Path extends string = ""> = Path extends ""
+export type PrependPath<Key, Path extends string = ""> = Path extends "" | never
   ? ToString<Key>
   : `${Path}.${ToString<Key>}`;
