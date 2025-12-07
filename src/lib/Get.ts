@@ -71,7 +71,7 @@ type Get<T, P extends Path<T>> = GET<T, P>;
  * const david = get(doctor, "10.Actor"); // "David"
  * ```
  */
-function get<T, P extends Path<T> & string>(obj: T, path: P): Get<T, P> {
+function get<T, P extends Path<T>>(obj: T, path: P): Get<T, P> {
   const parts = path.split(".");
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let current: any = obj;

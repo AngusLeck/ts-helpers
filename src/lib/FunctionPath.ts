@@ -20,10 +20,8 @@ interface AnyFunction {
  * type Obj = { name: string; greet: () => void; nested: { run: () => void } };
  * type FuncPaths = FunctionPath<Obj>; // "greet" | "nested.run"
  */
-type FunctionPath<T, D extends unknown[] = Depth<5>> = PathEndingIn<
+export type FunctionPath<T, D extends unknown[] = Depth<5>> = PathEndingIn<
   T,
   AnyFunction,
   D
 >;
-
-export { AnyFunction, FunctionPath };

@@ -27,7 +27,7 @@ module.exports = {
     "@typescript-eslint/explicit-function-return-type": "error",
     "no-trailing-spaces": "error",
     "prefer-destructuring": "error",
-    "etc/prefer-interface": ["error", { "allowIntersection": false }],
+    "etc/prefer-interface": ["off"],
     "etc/prefer-less-than": "warn",
     "etc/throw-error": "error"
   }

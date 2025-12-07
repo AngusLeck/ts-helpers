@@ -4,7 +4,9 @@ import { PrependPath } from "./PrependPath";
 import { Obj } from "./Obj";
 import { ArrayIndex } from "./ArrayIndex";
 import { ShouldTerminatePathing } from "./ShouldTerminatePathing";
-import { NonEmptyString } from "./NonEmptyString";
+import { Path } from "./Path";
+
+type IfExtends<Value, Target, Then> = Value extends Target ? Then : never;
 
 /**
  * Internal path builder that only produces paths ending in type Target.
@@ -14,36 +16,44 @@ type BuildPathsEndingIn<
   Target,
   D extends unknown[],
   Prefix extends string = "",
-> = T extends Target
-  ? NonEmptyString<Prefix>
-  : ShouldTerminatePathing<T, D> extends true
+> =
+  ShouldTerminatePathing<T, D> extends true
     ? never
     : T extends readonly unknown[] // Array
       ? number extends T["length"] // Dynamic array
         ? // ArrayIndex keeps "0" distinct so autocomplete shows it
-          BuildPathsEndingIn<
-            ArrayElement<T>,
-            Target,
-            DecrementDepth<D>,
-            PrependPath<ArrayIndex, Prefix>
-          >
+            | IfExtends<
+                ArrayElement<T>,
+                Target,
+                PrependPath<Prefix, ArrayIndex>
+              >
+            | BuildPathsEndingIn<
+                ArrayElement<T>,
+                Target,
+                DecrementDepth<D>,
+                PrependPath<Prefix, ArrayIndex>
+              >
         : {
             // Tuple
-            [K in keyof T & `${number}`]: BuildPathsEndingIn<
-              T[K],
-              Target,
-              DecrementDepth<D>,
-              PrependPath<K, Prefix>
-            >;
+            [K in keyof T & `${number}`]:
+              | IfExtends<T[K], Target, PrependPath<Prefix, K>>
+              | BuildPathsEndingIn<
+                  T[K],
+                  Target,
+                  DecrementDepth<D>,
+                  PrependPath<Prefix, K>
+                >;
           }[keyof T & `${number}`]
       : T extends Obj
         ? {
-            [K in keyof T]: BuildPathsEndingIn<
-              T[K],
-              Target,
-              DecrementDepth<D>,
-              PrependPath<K, Prefix>
-            >;
+            [K in keyof T]:
+              | IfExtends<T[K], Target, PrependPath<Prefix, K>>
+              | BuildPathsEndingIn<
+                  T[K],
+                  Target,
+                  DecrementDepth<D>,
+                  PrependPath<Prefix, K>
+                >;
           }[keyof T]
         : never;
 
@@ -59,10 +69,8 @@ type BuildPathsEndingIn<
  * type StringPaths = PathEndingIn<Obj, string>; // "name" | "nested.title"
  * type NumberPaths = PathEndingIn<Obj, number>; // "age"
  */
-type PathEndingIn<
+export type PathEndingIn<
   T,
   Target,
   D extends unknown[] = Depth<5>,
-> = BuildPathsEndingIn<T, Target, D>;
-
-export { BuildPathsEndingIn, PathEndingIn };
+> = BuildPathsEndingIn<T, Target, D> & Path<T, D>;

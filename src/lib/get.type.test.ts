@@ -1,9 +1,9 @@
-import { assertEqual, assertExtends } from "./testHelpers";
+import { Depth } from "./Depth";
+import { FunctionPath } from "./FunctionPath";
 import { GET, Get } from "./Get";
 import { Path } from "./Path";
-import { Depth } from "./Depth";
 import { PathEndingIn } from "./PathEndingIn";
-import { FunctionPath } from "./FunctionPath";
+import { assertEqual, assertExtends } from "./testHelpers";
 
 /**
  * Comprehensive test model covering all path generation scenarios.

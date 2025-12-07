@@ -15,23 +15,23 @@ type BuildPaths<T, D extends unknown[], Prefix extends string = ""> =
     : T extends readonly unknown[] // Array
       ? number extends T["length"] // Dynamic array
         ? // ArrayIndex keeps "0" distinct so autocomplete shows it
-            | PrependPath<ArrayIndex, Prefix>
+            | PrependPath<Prefix, ArrayIndex>
             | BuildPaths<
                 ArrayElement<T>,
                 DecrementDepth<D>,
-                PrependPath<ArrayIndex, Prefix>
+                PrependPath<Prefix, ArrayIndex>
               >
         : {
             // Tuple
             [K in keyof T & `${number}`]:
-              | PrependPath<K, Prefix>
-              | BuildPaths<T[K], DecrementDepth<D>, PrependPath<K, Prefix>>;
+              | PrependPath<Prefix, K>
+              | BuildPaths<T[K], DecrementDepth<D>, PrependPath<Prefix, K>>;
           }[keyof T & `${number}`]
       : T extends Obj
         ? {
             [K in keyof T]:
-              | PrependPath<K, Prefix>
-              | BuildPaths<T[K], DecrementDepth<D>, PrependPath<K, Prefix>>;
+              | PrependPath<Prefix, K>
+              | BuildPaths<T[K], DecrementDepth<D>, PrependPath<Prefix, K>>;
           }[keyof T]
         : never;
 
@@ -45,4 +45,4 @@ type BuildPaths<T, D extends unknown[], Prefix extends string = ""> =
  * type Obj = { user: { name: string } };
  * type Paths = Path<Obj>; // "user" | "user.name"
  */
-export type Path<T, D extends unknown[] = Depth<5>> = BuildPaths<T, D>;
+export type Path<T, D extends unknown[] = Depth<5>> = BuildPaths<T, D> & string;

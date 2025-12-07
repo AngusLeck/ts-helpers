@@ -7,16 +7,12 @@ export type GetKey<
   K extends string | number,
 > = T extends readonly (infer V)[]
   ? number extends T["length"]
-    ? V | undefined
-    : T extends { [k in K]: infer V }
+    ? V | undefined // Dynamic Array
+    : T extends { [k in K & `${number}`]: infer V } // Tuple
       ? V
       : never
-  : T extends {
-        [k in K]: infer V;
-      }
+  : T extends { [k in K]: infer V } // Object
     ? V
-    : T extends {
-          [k in K]?: infer V;
-        }
+    : T extends { [k in K]?: infer V } // Object with optional key
       ? V | undefined
       : undefined;
