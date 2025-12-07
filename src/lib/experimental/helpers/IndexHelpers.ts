@@ -24,8 +24,8 @@ export type HasNumberIndex<T> = number extends keyof T ? true : false;
  * { [key: string]: any; known: string } -> never (limitation: "known" is absorbed by string)
  * { 0: string; 1: number } -> "0" | "1"
  */
-export type ExplicitKeys<T> = {
-  [K in keyof T]: K extends string
+export type ExplicitKeys<T> = keyof T extends infer K
+  ? K extends string
     ? string extends K
       ? never
       : K
@@ -33,8 +33,8 @@ export type ExplicitKeys<T> = {
       ? number extends K
         ? never
         : `${K}`
-      : never;
-}[keyof T];
+      : never
+  : never;
 
 /**
  * Returns "<string>" if T has a string index signature and "<string>" is not already an explicit key.
