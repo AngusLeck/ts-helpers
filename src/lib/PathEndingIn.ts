@@ -1,5 +1,8 @@
-import { ArrayElement, IsDynamicArray, IsLeafType, KeyToString } from "./Path";
+import { ArrayElement } from "./ArrayElement";
+import { IsDynamicArray } from "./IsDynamicArray";
 import { DecrementDepth, Depth, IsDepthExhausted } from "./Depth";
+import { IsLeafType } from "./IsLeafType";
+import { ToString } from "./ToString";
 
 /**
  * Internal path builder that only produces paths ending in type Target.
@@ -62,16 +65,16 @@ type BuildPathsEndingIn<
                     [K in keyof T & (string | number)]:
                       | (T[K] extends Target
                           ? Prefix extends ""
-                            ? KeyToString<K>
-                            : `${Prefix}.${KeyToString<K>}`
+                            ? ToString<K>
+                            : `${Prefix}.${ToString<K>}`
                           : never)
                       | BuildPathsEndingIn<
                           T[K],
                           Target,
                           DecrementDepth<D>,
                           Prefix extends ""
-                            ? KeyToString<K>
-                            : `${Prefix}.${KeyToString<K>}`
+                            ? ToString<K>
+                            : `${Prefix}.${ToString<K>}`
                         >;
                   }[keyof T & (string | number)]
             : never;
