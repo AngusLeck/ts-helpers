@@ -146,4 +146,56 @@ describe("experimental/PathSuggestions", () => {
       assertEqual<Suggestions, Expected>(true);
     });
   });
+
+  describe("edge cases", () => {
+    // Optional properties
+    interface WithOptional {
+      required: string;
+      optional?: number;
+    }
+
+    it("handles optional properties", () => {
+      assertExtends<"required", PathSuggestions<WithOptional>>(true);
+      assertExtends<"optional", PathSuggestions<WithOptional>>(true);
+    });
+
+    // Readonly arrays
+    interface WithReadonly {
+      items: readonly string[];
+    }
+
+    it("handles readonly arrays", () => {
+      assertExtends<"items.0", PathSuggestions<WithReadonly>>(true);
+    });
+
+    // Empty object - object with no keys
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    type Empty = {};
+
+    it("handles empty objects", () => {
+      type Paths = PathSuggestions<Empty>;
+      // Empty object {} has no keys, so it returns never
+      assertEqual<Paths, never>(true);
+    });
+
+    // Nullable chains
+    interface WithNull {
+      maybe: { value: string } | null;
+    }
+
+    it("handles nullable properties", () => {
+      assertExtends<"maybe", PathSuggestions<WithNull>>(true);
+      assertExtends<"maybe.value", PathSuggestions<WithNull>>(true);
+    });
+
+    // Deeply nested arrays
+    interface NestedArrays {
+      matrix: string[][];
+    }
+
+    it("handles nested arrays", () => {
+      assertExtends<"matrix.0", PathSuggestions<NestedArrays>>(true);
+      assertExtends<"matrix.0.0", PathSuggestions<NestedArrays>>(true);
+    });
+  });
 });
