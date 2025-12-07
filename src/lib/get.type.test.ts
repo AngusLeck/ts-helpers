@@ -634,19 +634,40 @@ describe("Edge cases", () => {
 
   describe("tuples with rest elements", () => {
     type TupleWithRest = [string, ...number[]];
+    type TupleWithRest2 = [string, boolean, ...number[]];
 
     it("Path handles tuples with rest elements", () => {
       type Paths = Path<{ t: TupleWithRest }, Depth<2>>;
       assertExtends<"t", Paths>(true);
       assertExtends<"t.0", Paths>(true);
-      // Rest elements should allow any index
+      // Rest elements should allow any valid numeric index
       assertExtends<"t.1", Paths>(true);
       assertExtends<"t.99", Paths>(true);
+      // Non-numeric strings should NOT be valid
+      assertExtends<"t.rest", Paths>(false);
+    });
+
+    it("Path suggests first rest index for discoverability", () => {
+      // [string, ...number[]] should suggest "0" (fixed) AND "1" (first rest)
+      type Paths1 = Path<{ t: TupleWithRest }, Depth<2>>;
+      assertExtends<"t.0", Paths1>(true);
+      assertExtends<"t.1", Paths1>(true);
+
+      // [string, boolean, ...number[]] should suggest "0", "1" (fixed) AND "2" (first rest)
+      type Paths2 = Path<{ t: TupleWithRest2 }, Depth<2>>;
+      assertExtends<"t.0", Paths2>(true);
+      assertExtends<"t.1", Paths2>(true);
+      assertExtends<"t.2", Paths2>(true);
     });
 
     it("Get returns correct types for rest tuple elements", () => {
       assertEqual<Get<{ t: TupleWithRest }, "t.0">, string>(true);
       assertEqual<Get<{ t: TupleWithRest }, "t.1">, number | undefined>(true);
+
+      // TupleWithRest2: [string, boolean, ...number[]]
+      assertEqual<Get<{ t: TupleWithRest2 }, "t.0">, string>(true);
+      assertEqual<Get<{ t: TupleWithRest2 }, "t.1">, boolean>(true);
+      assertEqual<Get<{ t: TupleWithRest2 }, "t.2">, number | undefined>(true);
     });
   });
 

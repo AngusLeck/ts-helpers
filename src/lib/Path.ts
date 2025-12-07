@@ -1,9 +1,54 @@
 import { ArrayElement } from "./ArrayElement";
-import { ArrayIndex } from "./ArrayIndex";
+import { ArrayIndex, ArrayIndexFrom } from "./ArrayIndex";
 import { DecrementDepth, Depth } from "./Depth";
 import { ShouldTerminatePathing } from "./ShouldTerminatePathing";
 import { Obj } from "./Obj";
 import { PrependPath } from "./PrependPath";
+
+/**
+ * Extract numeric string keys from a tuple type (fixed indices only).
+ */
+type NumericKeys<T> = Extract<keyof T, `${number}`>;
+
+/**
+ * Count the number of fixed elements in a tuple by checking sequential indices.
+ * Returns the count of fixed elements (0 for plain arrays, N for [T1, T2, ...TN, ...rest[]]).
+ */
+type CountFixed<T extends readonly unknown[], N extends number = 0> =
+  `${N}` extends NumericKeys<T>
+    ? CountFixed<
+        T,
+        N extends 0
+          ? 1
+          : N extends 1
+            ? 2
+            : N extends 2
+              ? 3
+              : N extends 3
+                ? 4
+                : N extends 4
+                  ? 5
+                  : N extends 5
+                    ? 6
+                    : N extends 6
+                      ? 7
+                      : N extends 7
+                        ? 8
+                        : N extends 8
+                          ? 9
+                          : 10
+      >
+    : N;
+
+/**
+ * Get the appropriate array index type for autocomplete.
+ * - Plain arrays (string[]): ArrayIndex (starts at 0)
+ * - Rest tuples ([string, ...number[]]): fixed keys + ArrayIndexFrom<fixedCount>
+ */
+type DynamicArrayIndex<T extends readonly unknown[]> =
+  NumericKeys<T> extends never
+    ? ArrayIndex // Plain array - suggest from 0
+    : NumericKeys<T> | ArrayIndexFrom<CountFixed<T>>; // Rest tuple - fixed keys + first rest index
 
 /**
  * Internal path builder that recurses through object properties.
@@ -13,16 +58,16 @@ type BuildPaths<T, D extends unknown[], Prefix extends string = ""> =
   ShouldTerminatePathing<T, D> extends true
     ? never
     : T extends readonly unknown[] // Array
-      ? number extends T["length"] // Dynamic array
-        ? // ArrayIndex keeps "0" distinct so autocomplete shows it
-            | PrependPath<Prefix, ArrayIndex>
+      ? number extends T["length"] // Dynamic array or rest tuple
+        ? // Use DynamicArrayIndex for proper suggestions
+            | PrependPath<Prefix, DynamicArrayIndex<T>>
             | BuildPaths<
                 ArrayElement<T>,
                 DecrementDepth<D>,
-                PrependPath<Prefix, ArrayIndex>
+                PrependPath<Prefix, DynamicArrayIndex<T>>
               >
         : {
-            // Tuple
+            // Fixed tuple
             [K in keyof T & `${number}`]:
               | PrependPath<Prefix, K>
               | BuildPaths<T[K], DecrementDepth<D>, PrependPath<Prefix, K>>;
