@@ -634,10 +634,25 @@ describe("Edge cases", () => {
 
   describe("tuples with rest elements", () => {
     type TupleWithRest = [string, ...number[]];
-    type TupleWithRest2 = [string, boolean, ...number[]];
+    // Longer tuple: 11 fixed elements + rest
+    type TupleWithRest2 = [
+      string,
+      boolean,
+      string,
+      string,
+      string,
+      string,
+      string,
+      string,
+      string,
+      number,
+      string,
+      ...number[],
+    ];
 
     it("Path handles tuples with rest elements", () => {
       type Paths = Path<{ t: TupleWithRest }, Depth<2>>;
+
       assertExtends<"t", Paths>(true);
       assertExtends<"t.0", Paths>(true);
       // Rest elements should allow any valid numeric index
@@ -653,21 +668,23 @@ describe("Edge cases", () => {
       assertExtends<"t.0", Paths1>(true);
       assertExtends<"t.1", Paths1>(true);
 
-      // [string, boolean, ...number[]] should suggest "0", "1" (fixed) AND "2" (first rest)
+      // TupleWithRest2 has 11 fixed elements, so should suggest "0"-"10" (fixed) AND "11" (first rest)
       type Paths2 = Path<{ t: TupleWithRest2 }, Depth<2>>;
       assertExtends<"t.0", Paths2>(true);
-      assertExtends<"t.1", Paths2>(true);
-      assertExtends<"t.2", Paths2>(true);
+      assertExtends<"t.10", Paths2>(true);
+      assertExtends<"t.11", Paths2>(true); // First rest index
+      assertExtends<"t.99", Paths2>(true);
     });
 
     it("Get returns correct types for rest tuple elements", () => {
       assertEqual<Get<{ t: TupleWithRest }, "t.0">, string>(true);
       assertEqual<Get<{ t: TupleWithRest }, "t.1">, number | undefined>(true);
 
-      // TupleWithRest2: [string, boolean, ...number[]]
+      // TupleWithRest2: 11 fixed elements + ...number[]
       assertEqual<Get<{ t: TupleWithRest2 }, "t.0">, string>(true);
       assertEqual<Get<{ t: TupleWithRest2 }, "t.1">, boolean>(true);
-      assertEqual<Get<{ t: TupleWithRest2 }, "t.2">, number | undefined>(true);
+      assertEqual<Get<{ t: TupleWithRest2 }, "t.10">, string>(true); // Last fixed element
+      assertEqual<Get<{ t: TupleWithRest2 }, "t.11">, number | undefined>(true); // First rest element
     });
   });
 

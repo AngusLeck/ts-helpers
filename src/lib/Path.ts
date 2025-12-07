@@ -1,5 +1,5 @@
 import { ArrayElement } from "./ArrayElement";
-import { ArrayIndex, ArrayIndexFrom } from "./ArrayIndex";
+import { ArrayIndex } from "./ArrayIndex";
 import { DecrementDepth, Depth } from "./Depth";
 import { ShouldTerminatePathing } from "./ShouldTerminatePathing";
 import { Obj } from "./Obj";
@@ -11,44 +11,64 @@ import { PrependPath } from "./PrependPath";
 type NumericKeys<T> = Extract<keyof T, `${number}`>;
 
 /**
+ * Increment lookup table for counting fixed tuple elements.
+ * Supports tuples with up to 20 fixed elements.
+ */
+type Increment = [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20,
+  21,
+];
+
+/**
  * Count the number of fixed elements in a tuple by checking sequential indices.
  * Returns the count of fixed elements (0 for plain arrays, N for [T1, T2, ...TN, ...rest[]]).
  */
 type CountFixed<T extends readonly unknown[], N extends number = 0> =
   `${N}` extends NumericKeys<T>
-    ? CountFixed<
-        T,
-        N extends 0
-          ? 1
-          : N extends 1
-            ? 2
-            : N extends 2
-              ? 3
-              : N extends 3
-                ? 4
-                : N extends 4
-                  ? 5
-                  : N extends 5
-                    ? 6
-                    : N extends 6
-                      ? 7
-                      : N extends 7
-                        ? 8
-                        : N extends 8
-                          ? 9
-                          : 10
-      >
+    ? N extends keyof Increment
+      ? CountFixed<T, Increment[N]>
+      : N // Hit the limit (20+), return current count
     : N;
+
+type NonZeroDigit = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
+
+/**
+ * Base type for rest tuple indices.
+ * Includes specific literals for autocomplete + pattern for acceptance.
+ */
+type RestTupleIndexBase<T extends readonly unknown[]> =
+  | NumericKeys<T> // Fixed keys (show in autocomplete)
+  | `${CountFixed<T>}` // First rest index (show in autocomplete)
+  | `${NonZeroDigit}${string}`; // Pattern for accepting any numeric >= 10
 
 /**
  * Get the appropriate array index type for autocomplete.
- * - Plain arrays (string[]): ArrayIndex (starts at 0)
- * - Rest tuples ([string, ...number[]]): fixed keys + ArrayIndexFrom<fixedCount>
+ * - Plain arrays (string[]): ArrayIndex (suggests "0")
+ * - Rest tuples ([string, ...number[]]): suggests fixed keys + first rest index
  */
 type DynamicArrayIndex<T extends readonly unknown[]> =
   NumericKeys<T> extends never
-    ? ArrayIndex // Plain array - suggest from 0
-    : NumericKeys<T> | ArrayIndexFrom<CountFixed<T>>; // Rest tuple - fixed keys + first rest index
+    ? ArrayIndex // Plain array - suggests "0"
+    : RestTupleIndexBase<T> & `${number}`; // Rest tuple - suggests specific indices
 
 /**
  * Internal path builder that recurses through object properties.
