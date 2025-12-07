@@ -391,3 +391,380 @@ describe("union type handling", () => {
     assertEqual<Get<ArrayTupleUnion, "0">, "tup" | "arr" | undefined>(true);
   });
 });
+
+/**
+ * Edge case tests to verify handling of unusual type scenarios
+ */
+describe("Edge cases", () => {
+  describe("index signatures", () => {
+    it("handles objects with string index signatures", () => {
+      interface StringIndexed {
+        [key: string]: number;
+      }
+      // Path should generate paths for index signature
+      type Paths = Path<{ data: StringIndexed }, Depth<2>>;
+      assertExtends<"data", Paths>(true);
+      // Index signatures create `string` keys - check if any path beyond "data" works
+      assertExtends<"data.anything", Paths>(true);
+    });
+
+    it("handles objects with number index signatures", () => {
+      interface NumberIndexed {
+        [key: number]: string;
+      }
+      type Paths = Path<{ items: NumberIndexed }, Depth<2>>;
+      assertExtends<"items", Paths>(true);
+    });
+
+    it("Get returns correct type for index signatures", () => {
+      interface StringIndexed {
+        [key: string]: number;
+      }
+      assertEqual<Get<{ data: StringIndexed }, "data">, StringIndexed>(true);
+    });
+  });
+
+  describe("tuples with optional elements", () => {
+    it("handles tuples with optional trailing elements", () => {
+      type OptionalTuple = [string, number?];
+      type Paths = Path<{ t: OptionalTuple }, Depth<2>>;
+      assertExtends<"t.0", Paths>(true);
+      assertExtends<"t.1", Paths>(true);
+    });
+
+    it("Get returns correct types for optional tuple elements", () => {
+      type OptionalTuple = [string, number?];
+      assertEqual<Get<{ t: OptionalTuple }, "t.0">, string>(true);
+      assertEqual<Get<{ t: OptionalTuple }, "t.1">, number | undefined>(true);
+    });
+  });
+
+  describe("readonly arrays", () => {
+    it("handles readonly arrays", () => {
+      interface WithReadonlyArray {
+        items: readonly string[];
+      }
+      type Paths = Path<WithReadonlyArray, Depth<2>>;
+      assertExtends<"items", Paths>(true);
+      assertExtends<"items.0", Paths>(true);
+    });
+
+    it("handles readonly tuples", () => {
+      interface WithReadonlyTuple {
+        coords: readonly [number, number];
+      }
+      type Paths = Path<WithReadonlyTuple, Depth<2>>;
+      assertExtends<"coords.0", Paths>(true);
+      assertExtends<"coords.1", Paths>(true);
+    });
+  });
+
+  describe("never and unknown types", () => {
+    it("handles properties typed as never", () => {
+      interface WithNever {
+        impossible: never;
+        possible: string;
+      }
+      type Paths = Path<WithNever, Depth<1>>;
+      assertExtends<"possible", Paths>(true);
+      assertExtends<"impossible", Paths>(true);
+    });
+
+    it("handles properties typed as unknown", () => {
+      interface WithUnknown {
+        mystery: unknown;
+        known: string;
+      }
+      type Paths = Path<WithUnknown, Depth<1>>;
+      assertExtends<"mystery", Paths>(true);
+      assertExtends<"known", Paths>(true);
+    });
+
+    it("Get returns never/unknown correctly", () => {
+      interface WithNeverUnknown {
+        never: never;
+        unknown: unknown;
+      }
+      assertEqual<Get<WithNeverUnknown, "never">, never>(true);
+      assertEqual<Get<WithNeverUnknown, "unknown">, unknown>(true);
+    });
+  });
+
+  describe("empty objects and arrays", () => {
+    it("handles empty object type", () => {
+      // eslint-disable-next-line @typescript-eslint/ban-types
+      type EmptyObj = {};
+      type Paths = Path<{ data: EmptyObj }, Depth<2>>;
+      // Should only have "data", no nested paths
+      assertEqual<Paths, "data">(true);
+    });
+
+    it("handles empty tuple", () => {
+      type EmptyTuple = [];
+      type Paths = Path<{ items: EmptyTuple }, Depth<2>>;
+      assertEqual<Paths, "items">(true);
+    });
+  });
+
+  describe("union of objects with different keys", () => {
+    it("Path generates paths for all union members", () => {
+      type UnionObj = { a: string } | { b: number };
+      type Paths = Path<UnionObj, Depth<1>>;
+      // Both "a" and "b" should be valid paths
+      assertExtends<"a", Paths>(true);
+      assertExtends<"b", Paths>(true);
+    });
+
+    it("Get returns undefined for keys not present in all union members", () => {
+      type UnionObj = { a: string } | { b: number };
+      assertEqual<Get<UnionObj, "a">, string | undefined>(true);
+      assertEqual<Get<UnionObj, "b">, number | undefined>(true);
+    });
+  });
+
+  describe("intersection types", () => {
+    it("handles intersection of objects", () => {
+      type Intersected = { a: string } & { b: number };
+      type Paths = Path<Intersected, Depth<1>>;
+      assertExtends<"a", Paths>(true);
+      assertExtends<"b", Paths>(true);
+    });
+
+    it("Get extracts correct types from intersections", () => {
+      type Intersected = { a: string } & { b: number };
+      assertEqual<Get<Intersected, "a">, string>(true);
+      assertEqual<Get<Intersected, "b">, number>(true);
+    });
+  });
+
+  describe("arrays of unions", () => {
+    it("handles arrays containing union types", () => {
+      interface WithUnionArray {
+        items: (string | number)[];
+      }
+      type Paths = Path<WithUnionArray, Depth<2>>;
+      assertExtends<"items.0", Paths>(true);
+    });
+
+    it("Get returns union element type for array of unions", () => {
+      interface WithUnionArray {
+        items: (string | number)[];
+      }
+      assertEqual<Get<WithUnionArray, "items.0">, string | number | undefined>(
+        true,
+      );
+    });
+  });
+
+  describe("nested nullable chains", () => {
+    it("handles deeply nested nullable properties", () => {
+      interface DeepNullable {
+        a: {
+          b: {
+            c: string | null;
+          } | null;
+        } | null;
+      }
+      type Paths = Path<DeepNullable, Depth<4>>;
+      assertExtends<"a", Paths>(true);
+      assertExtends<"a.b", Paths>(true);
+      assertExtends<"a.b.c", Paths>(true);
+    });
+
+    it("Get preserves null through nullable chain", () => {
+      interface DeepNullable {
+        a: {
+          b: string | null;
+        } | null;
+      }
+      // At "a", we get the whole object | null
+      assertEqual<Get<DeepNullable, "a">, { b: string | null } | null>(true);
+      // At "a.b", null doesn't have .b so we should get undefined too
+      assertEqual<Get<DeepNullable, "a.b">, string | null | undefined>(true);
+    });
+  });
+
+  describe("symbol keys", () => {
+    it("ignores symbol keys in Path generation", () => {
+      const sym = Symbol("test");
+      interface WithSymbol {
+        [sym]: string;
+        normal: number;
+      }
+      type Paths = Path<WithSymbol, Depth<1>>;
+      // Symbol keys should not appear in paths (only string/number keys)
+      assertExtends<"normal", Paths>(true);
+    });
+  });
+
+  describe("class instances", () => {
+    it("handles class instance types", () => {
+      class MyClass {
+        name = "";
+        getValue(): number {
+          return 0;
+        }
+      }
+      type Paths = Path<MyClass, Depth<1>>;
+      assertExtends<"name", Paths>(true);
+      assertExtends<"getValue", Paths>(true);
+    });
+  });
+
+  describe("branded/nominal types", () => {
+    it("handles branded primitives", () => {
+      type UserId = string & { __brand: "UserId" };
+      interface WithBranded {
+        id: UserId;
+        name: string;
+      }
+      type Paths = Path<WithBranded, Depth<1>>;
+      assertExtends<"id", Paths>(true);
+      assertExtends<"name", Paths>(true);
+    });
+
+    it("Get returns branded type correctly", () => {
+      type UserId = string & { __brand: "UserId" };
+      interface WithBranded {
+        id: UserId;
+      }
+      assertEqual<Get<WithBranded, "id">, UserId>(true);
+    });
+  });
+
+  describe("tuples with rest elements", () => {
+    type TupleWithRest = [string, ...number[]];
+
+    it("Path handles tuples with rest elements", () => {
+      type Paths = Path<{ t: TupleWithRest }, Depth<2>>;
+      assertExtends<"t", Paths>(true);
+      assertExtends<"t.0", Paths>(true);
+      // Rest elements should allow any index
+      assertExtends<"t.1", Paths>(true);
+      assertExtends<"t.99", Paths>(true);
+    });
+
+    it("Get returns correct types for rest tuple elements", () => {
+      assertEqual<Get<{ t: TupleWithRest }, "t.0">, string>(true);
+      assertEqual<Get<{ t: TupleWithRest }, "t.1">, number | undefined>(true);
+    });
+  });
+
+  describe("labeled tuple elements", () => {
+    type LabeledTuple = [first: string, second: number];
+
+    it("Path handles labeled tuples", () => {
+      type Paths = Path<{ t: LabeledTuple }, Depth<2>>;
+      assertExtends<"t.0", Paths>(true);
+      assertExtends<"t.1", Paths>(true);
+    });
+
+    it("Get returns correct types for labeled tuples", () => {
+      assertEqual<Get<{ t: LabeledTuple }, "t.0">, string>(true);
+      assertEqual<Get<{ t: LabeledTuple }, "t.1">, number>(true);
+    });
+  });
+
+  describe("nested arrays", () => {
+    type NestedArray = string[][];
+
+    it("Path handles nested arrays", () => {
+      type Paths = Path<{ arr: NestedArray }, Depth<3>>;
+      assertExtends<"arr", Paths>(true);
+      assertExtends<"arr.0", Paths>(true);
+      assertExtends<"arr.0.0", Paths>(true);
+    });
+
+    it("Get returns correct types for nested array access", () => {
+      assertEqual<Get<{ arr: NestedArray }, "arr">, string[][]>(true);
+      assertEqual<Get<{ arr: NestedArray }, "arr.0">, string[] | undefined>(
+        true,
+      );
+      assertEqual<Get<{ arr: NestedArray }, "arr.0.0">, string | undefined>(
+        true,
+      );
+    });
+  });
+
+  describe("Record types", () => {
+    type RecordType = Record<string, { value: number }>;
+
+    it("Path handles Record types", () => {
+      type Paths = Path<{ r: RecordType }, Depth<3>>;
+      assertExtends<"r", Paths>(true);
+      // Record has string index signature
+      assertExtends<"r.anykey", Paths>(true);
+      assertExtends<"r.anykey.value", Paths>(true);
+    });
+
+    it("Get returns correct types for Record access", () => {
+      assertEqual<Get<{ r: RecordType }, "r">, RecordType>(true);
+    });
+  });
+
+  describe("Readonly<Partial<T>>", () => {
+    type ReadonlyPartial = Readonly<Partial<{ a: string; b: number }>>;
+
+    it("Path handles mapped types with modifiers", () => {
+      type Paths = Path<ReadonlyPartial, Depth<1>>;
+      assertExtends<"a", Paths>(true);
+      assertExtends<"b", Paths>(true);
+    });
+
+    it("Get returns optional types correctly", () => {
+      assertEqual<Get<ReadonlyPartial, "a">, string | undefined>(true);
+      assertEqual<Get<ReadonlyPartial, "b">, number | undefined>(true);
+    });
+  });
+
+  describe("discriminated unions", () => {
+    type DiscUnion = { type: "a"; aVal: string } | { type: "b"; bVal: number };
+
+    it("Path generates paths for all discriminated union variants", () => {
+      type Paths = Path<DiscUnion, Depth<1>>;
+      assertExtends<"type", Paths>(true);
+      assertExtends<"aVal", Paths>(true);
+      assertExtends<"bVal", Paths>(true);
+    });
+
+    it("Get handles discriminated union correctly", () => {
+      // "type" exists in both - should be union of literals
+      assertEqual<Get<DiscUnion, "type">, "a" | "b">(true);
+      // "aVal" only exists in one variant
+      assertEqual<Get<DiscUnion, "aVal">, string | undefined>(true);
+      assertEqual<Get<DiscUnion, "bVal">, number | undefined>(true);
+    });
+  });
+
+  describe("tuple with mixed element types", () => {
+    type MixedTuple = [string, { nested: boolean }, number[]];
+
+    it("Path traverses into tuple element objects and arrays", () => {
+      type Paths = Path<{ m: MixedTuple }, Depth<3>>;
+      assertExtends<"m.0", Paths>(true);
+      assertExtends<"m.1", Paths>(true);
+      assertExtends<"m.1.nested", Paths>(true);
+      assertExtends<"m.2", Paths>(true);
+      assertExtends<"m.2.0", Paths>(true);
+    });
+
+    it("Get returns correct types for mixed tuple elements", () => {
+      assertEqual<Get<{ m: MixedTuple }, "m.0">, string>(true);
+      assertEqual<Get<{ m: MixedTuple }, "m.1">, { nested: boolean }>(true);
+      assertEqual<Get<{ m: MixedTuple }, "m.1.nested">, boolean>(true);
+      assertEqual<Get<{ m: MixedTuple }, "m.2">, number[]>(true);
+      assertEqual<Get<{ m: MixedTuple }, "m.2.0">, number | undefined>(true);
+    });
+  });
+
+  describe("template literal keys", () => {
+    type TemplateKeys = { [K in `user_${string}`]: number };
+
+    it("Path handles template literal index signatures", () => {
+      type Paths = Path<{ t: TemplateKeys }, Depth<2>>;
+      assertExtends<"t", Paths>(true);
+      // Template literal creates a string index signature effectively
+      assertExtends<"t.user_123", Paths>(true);
+    });
+  });
+});
