@@ -4,19 +4,19 @@ import { Obj } from "../Obj";
 import { PrependPath } from "../PrependPath";
 import { ShouldTerminatePathing } from "../ShouldTerminatePathing";
 
-/**
- * Internal path builder that recurses through object properties.
- * Uses ${number} for array indices - complete but not suggestion-friendly.
- */
+/** Internal path builder - uses ${number} for arrays (complete but not suggestion-friendly). */
 type BuildPaths<T, D extends unknown[], Prefix extends string = ""> =
   ShouldTerminatePathing<T, D> extends true
     ? never
     : T extends readonly unknown[]
       ? number extends T["length"]
-        // Dynamic array: accept any numeric index
-        ? | PrependPath<Prefix, `${number}`>
-          | BuildPaths<ArrayElement<T>, DecrementDepth<D>, PrependPath<Prefix, `${number}`>>
-        // Tuple: only valid indices
+        ?
+            | PrependPath<Prefix, `${number}`>
+            | BuildPaths<
+                ArrayElement<T>,
+                DecrementDepth<D>,
+                PrependPath<Prefix, `${number}`>
+              >
         : {
             [K in keyof T & `${number}`]:
               | PrependPath<Prefix, K>
@@ -31,11 +31,6 @@ type BuildPaths<T, D extends unknown[], Prefix extends string = ""> =
         : never;
 
 /**
- * Generates a union of all valid dot-notation paths for type T.
- * This is the complete/correct type - use for validation constraints.
- * For IDE autocomplete, use PathSuggestions instead.
- *
- * @typeParam T - The object type to generate paths for
- * @typeParam D - Depth tuple (default: Depth<5> = 5 levels)
+ * All valid dot-notation paths for type T. For IDE autocomplete, use PathSuggestions.
  */
 export type Path<T, D extends unknown[] = Depth<5>> = BuildPaths<T, D> & string;

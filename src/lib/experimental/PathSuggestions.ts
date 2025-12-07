@@ -10,10 +10,7 @@ import {
 } from "./helpers/IndexHelpers";
 import { HasRestElement, ExplicitTupleLength } from "./helpers/TupleHelpers";
 
-/**
- * Build suggestions for tuple types.
- * Returns all explicit indices, plus one more if there's a rest element.
- */
+/** Build suggestions for tuples: all explicit indices + one for rest element. */
 type BuildTupleSuggestions<
   T extends readonly unknown[],
   D extends unknown[],
@@ -25,29 +22,23 @@ type BuildTupleSuggestions<
         | BuildSuggestions<T[K], DecrementDepth<D>, PrependPath<Prefix, K>>;
     }[keyof T & `${number}`]
   | (HasRestElement<T> extends true
-      ? ExplicitTupleLength<T> extends number
-        ?
-            | PrependPath<Prefix, `${ExplicitTupleLength<T>}`>
-            | BuildSuggestions<
-                ArrayElement<T>,
-                DecrementDepth<D>,
-                PrependPath<Prefix, `${ExplicitTupleLength<T>}`>
-              >
-        : never
+      ?
+          | PrependPath<Prefix, `${ExplicitTupleLength<T>}`>
+          | BuildSuggestions<
+              ArrayElement<T>,
+              DecrementDepth<D>,
+              PrependPath<Prefix, `${ExplicitTupleLength<T>}`>
+            >
       : never);
 
-/**
- * Internal suggestion builder that recurses through object properties.
- * Uses literal strings only - no ${number} or template literals.
- */
+/** Internal suggestion builder - uses only literal strings for IDE autocomplete. */
 type BuildSuggestions<T, D extends unknown[], Prefix extends string = ""> =
   ShouldTerminatePathing<T, D> extends true
     ? never
     : T extends readonly unknown[]
       ? T extends readonly [unknown, ...unknown[]]
-        ? // Tuple (may have rest): all explicit indices + one for rest if applicable
-          BuildTupleSuggestions<T, D, Prefix>
-        : // Dynamic array: only suggest "0"
+        ? BuildTupleSuggestions<T, D, Prefix>
+        :
             | PrependPath<Prefix, "0">
             | BuildSuggestions<
                 ArrayElement<T>,
@@ -56,52 +47,32 @@ type BuildSuggestions<T, D extends unknown[], Prefix extends string = ""> =
               >
       : T extends Obj
         ?
-            | (StringIndexPlaceholder<T> extends infer P extends string
-                ? P extends never
-                  ? never
-                  :
-                      | PrependPath<Prefix, P>
-                      | BuildSuggestions<
-                          T[string],
-                          DecrementDepth<D>,
-                          PrependPath<Prefix, P>
-                        >
-                : never)
-            | (NumberIndexPlaceholder<T> extends infer P extends string
-                ? P extends never
-                  ? never
-                  :
-                      | PrependPath<Prefix, P>
-                      | BuildSuggestions<
-                          T[number],
-                          DecrementDepth<D>,
-                          PrependPath<Prefix, P>
-                        >
-                : never)
+            | PrependPath<Prefix, StringIndexPlaceholder<T>>
+            | BuildSuggestions<
+                T[string],
+                DecrementDepth<D>,
+                PrependPath<Prefix, StringIndexPlaceholder<T>>
+              >
+            | PrependPath<Prefix, NumberIndexPlaceholder<T>>
+            | BuildSuggestions<
+                T[number],
+                DecrementDepth<D>,
+                PrependPath<Prefix, NumberIndexPlaceholder<T>>
+              >
             | {
-                [K in ExplicitKeys<T>]:
-                  | PrependPath<Prefix, K>
+                [K in ExplicitKeys<T> & keyof T]:
+                  | PrependPath<Prefix, K & string>
                   | BuildSuggestions<
-                      K extends keyof T ? T[K] : never,
+                      T[K],
                       DecrementDepth<D>,
-                      PrependPath<Prefix, K>
+                      PrependPath<Prefix, K & string>
                     >;
-              }[ExplicitKeys<T>]
+              }[ExplicitKeys<T> & keyof T]
         : never;
 
 /**
- * Generates a union of path suggestions for IDE autocomplete.
- * Intentionally incomplete - uses only string literals for full suggestion support.
+ * Path suggestions for IDE autocomplete. Uses only string literals.
  * For complete path validation, use Path instead.
- *
- * Rules:
- * - Arrays: suggest "0" only
- * - Tuples: all explicit indices + one for rest element
- * - Objects: explicit keys only + "<string>"/"<number>" for index signatures
- * - Unions: paths from all branches
- *
- * @typeParam T - The object type to generate suggestions for
- * @typeParam D - Depth tuple (default: Depth<5> = 5 levels)
  */
 export type PathSuggestions<
   T,
