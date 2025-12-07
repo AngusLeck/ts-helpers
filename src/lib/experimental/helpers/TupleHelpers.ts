@@ -18,11 +18,19 @@ export type ExplicitTupleLength<T extends readonly unknown[]> =
 
 /**
  * Count explicit elements by recursively peeling off elements from the tuple.
- * Stops when the remaining tuple has an unbounded length (indicating rest element).
+ * Stops when the remaining tuple is just a plain array (no more explicit elements).
+ * Uses a counter tuple to accumulate the count.
  */
-type ExplicitLengthCounter<T extends readonly unknown[]> =
-  T extends readonly [unknown, ...infer Rest]
+type ExplicitLengthCounter<
+  T extends readonly unknown[],
+  Counter extends unknown[] = [],
+> = T extends readonly [unknown, ...infer Rest]
+  ? Rest extends readonly unknown[]
     ? number extends Rest["length"]
-      ? 1 // Rest is unbounded, so we've found the boundary
-      : 1 + ExplicitLengthCounter<Rest>
-    : 0;
+      ? // Rest has unbounded length - check if it still has explicit elements
+        Rest extends readonly [unknown, ...unknown[]]
+        ? ExplicitLengthCounter<Rest, [...Counter, 0]> // Still has explicit elements
+        : [...Counter, 0]["length"] // Rest is just a plain array, stop here
+      : ExplicitLengthCounter<Rest, [...Counter, 0]> // Rest is a fixed tuple
+    : Counter["length"]
+  : Counter["length"];

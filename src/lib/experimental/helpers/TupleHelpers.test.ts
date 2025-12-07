@@ -38,9 +38,11 @@ describe("TupleHelpers", () => {
       assertEqual<Result, 3>(true);
     });
 
-    it("returns 2 for tuple with optional element (no rest)", () => {
+    it("returns 1 | 2 for tuple with optional element (variable length)", () => {
       type Result = ExplicitTupleLength<[string, number?]>;
-      assertEqual<Result, 2>(true);
+      // Optional elements create variable length tuples
+      // [string, number?] has length 1 | 2
+      assertEqual<Result, 1 | 2>(true);
     });
   });
 
