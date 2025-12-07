@@ -17,17 +17,12 @@ export type ExplicitTupleLength<T extends readonly unknown[]> =
     : T["length"];
 
 /**
- * Count explicit elements by iterating until we hit the rest element.
- * Uses a counter tuple that grows until we can't index anymore.
+ * Count explicit elements by recursively peeling off elements from the tuple.
+ * Stops when the remaining tuple has an unbounded length (indicating rest element).
  */
-type ExplicitLengthCounter<
-  T extends readonly unknown[],
-  Counter extends unknown[] = [],
-> = Counter["length"] extends keyof T
-  ? T[Counter["length"]] extends T[number]
-    ? // Check if this position is part of rest by seeing if next position exists
-      [...Counter, 0]["length"] extends keyof T
-      ? ExplicitLengthCounter<T, [...Counter, 0]>
-      : [...Counter, 0]["length"]
-    : Counter["length"]
-  : Counter["length"];
+type ExplicitLengthCounter<T extends readonly unknown[]> =
+  T extends readonly [unknown, ...infer Rest]
+    ? number extends Rest["length"]
+      ? 1 // Rest is unbounded, so we've found the boundary
+      : 1 + ExplicitLengthCounter<Rest>
+    : 0;
