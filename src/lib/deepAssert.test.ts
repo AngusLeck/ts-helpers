@@ -28,11 +28,14 @@ test("Should return true for complex guard logic that is satisfied", () => {
   const input: TestType3 = { data: { count: 5, valid: true } };
 
   const objectValidator = (
-    val: TestType3["data"]
+    val: unknown,
   ): val is { count: number; valid: true } =>
     typeof val === "object" &&
+    val !== null &&
+    "count" in val &&
     typeof val.count === "number" &&
     0 < val.count &&
+    "valid" in val &&
     val.valid === true;
 
   expect(deepTypeGuard(input, "data", objectValidator)).toBe(true);
@@ -42,10 +45,10 @@ test("Should return true for complex guard logic that is satisfied", () => {
 test("Should handle paths leading to undefined values correctly", () => {
   const input: TestType4 = { exists: { someProperty: "value" } };
   expect(deepTypeGuard(input, "doesNotExist.someProperty", isString)).toBe(
-    false
+    false,
   );
   expect(() =>
-    deepAssert(input, "doesNotExist.someProperty", isString)
+    deepAssert(input, "doesNotExist.someProperty", isString),
   ).toThrow();
 });
 

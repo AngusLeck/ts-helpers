@@ -19,7 +19,7 @@ import { Path } from "../Path";
  */
 export function deepTypeGuard<T, P extends Path<T>, V extends GET<T, P>>(
   path: P,
-  guard: (val: GET<T, P>) => val is V
+  guard: (val: GET<T, P>) => val is V,
 ): (input: T) => input is Narrow<T, P, V> {
   return (input): input is Narrow<T, P, V> => guard(get(input, path));
 }

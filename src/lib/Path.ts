@@ -1,27 +1,43 @@
-import { FlattenedPath } from "./FlattenedPath";
-import { Func } from "./Func";
+import { DecrementDepth, Depth } from "./Depth";
+import { ShouldTerminatePathing } from "./ShouldTerminatePathing";
 import { Obj } from "./Obj";
-import { ToString } from "./ToString";
-
-type RecursivePath<K, T> = T extends Func
-  ? ToString<K>
-  : T extends Obj
-  ? {
-      [K1 in keyof T]:
-        | ToString<K>
-        | RecursivePath<`${ToString<K>}.${ToString<K1>}`, T[K1]>;
-    }
-  : ToString<K>;
-
-type NestedPath<T> = T extends Obj
-  ? {
-      [K in keyof T]: RecursivePath<K, T[K]>;
-    }
-  : undefined;
+import { PrependPath } from "./PrependPath";
+import { ToNumber } from "./ToNumber";
+import { ArrayIndex } from "./ArrayIndex";
 
 /**
- * Returns all the paths of T as "." separated keys of T
+ * Internal path builder that recurses through object properties.
+ * Handles objects, arrays, and tuples.
  */
-type Path<T> = FlattenedPath<NestedPath<T>> & string;
+type BuildPaths<T, D extends unknown[], Prefix extends string = ""> =
+  ShouldTerminatePathing<T, D> extends true
+    ? never
+    : T extends readonly unknown[]
+      ? {
+          [K in ArrayIndex<T>]:
+            | PrependPath<Prefix, K>
+            | BuildPaths<
+                T[ToNumber<K>],
+                DecrementDepth<D>,
+                PrependPath<Prefix, K>
+              >;
+        }[ArrayIndex<T>]
+      : T extends Obj
+        ? {
+            [K in keyof T]:
+              | PrependPath<Prefix, K>
+              | BuildPaths<T[K], DecrementDepth<D>, PrependPath<Prefix, K>>;
+          }[keyof T]
+        : never;
 
-export { Path };
+/**
+ * Generates a union of all valid dot-notation paths for type T.
+ *
+ * @typeParam T - The object type to generate paths for
+ * @typeParam D - Depth tuple (default: Depth<5> = 5 levels)
+ *
+ * @example
+ * type Obj = { user: { name: string } };
+ * type Paths = Path<Obj>; // "user" | "user.name"
+ */
+export type Path<T, D extends unknown[] = Depth<5>> = BuildPaths<T, D> & string;

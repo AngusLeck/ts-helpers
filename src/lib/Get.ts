@@ -1,5 +1,5 @@
-import { GetKey } from "./GetKey";
 import { Path } from "./Path";
+import { GetKey } from "./GetKey";
 
 /**
  * Like Get returns the type of the value at a path of T.
@@ -16,7 +16,7 @@ import { Path } from "./Path";
  *   13: { Actor: "Jodie" };
  * }
  *
- * type David = Get<Doctor, "10.Actor">; // "David"
+ * type David = GET<Doctor, "10.Actor">; // "David"
  * ```
  */
 type GET<T, P extends string> = P extends `${infer K}.${infer R}`
@@ -29,6 +29,10 @@ type GET<T, P extends string> = P extends `${infer K}.${infer R}`
  * If the object might not have the path, the union type will include undefined.
  * (This handles nullable graphql types)
  *
+ * @typeParam T - The object type
+ * @typeParam P - The dot-notation path string
+ *
+ * @example
  * ```
  * interface Doctor {
  *   9: { Actor: "Christopher" };
@@ -39,6 +43,12 @@ type GET<T, P extends string> = P extends `${infer K}.${infer R}`
  * }
  *
  * type David = Get<Doctor, "10.Actor">; // "David"
+ * ```
+ *
+ * @example
+ * ```
+ * type Obj = { user: { name: string } };
+ * type Name = Get<Obj, "user.name">; // string
  * ```
  */
 type Get<T, P extends Path<T>> = GET<T, P>;

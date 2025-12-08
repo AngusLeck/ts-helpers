@@ -21,7 +21,7 @@ import { Path } from "./Path";
 export function deepTypeGuard<T, P extends Path<T>, V extends GET<T, P>>(
   input: T,
   path: P,
-  guard: (val: GET<T, P>) => val is V
+  guard: (val: GET<T, P>) => val is V,
 ): input is Narrow<T, P, V> {
   return guard(get(input, path));
 }
@@ -45,7 +45,7 @@ export function deepAssert<T, P extends Path<T>, V extends GET<T, P>>(
   input: T,
   path: P,
   guard: (val: GET<T, P>) => val is V,
-  errorMessage?: string
+  errorMessage?: string,
 ): asserts input is Narrow<T, P, V> {
   assert(get(input, path), guard, errorMessage);
 }
