@@ -1,10 +1,10 @@
-import { ArrayElement } from "./ArrayElement";
 import { DecrementDepth, Depth } from "./Depth";
 import { PrependPath } from "./PrependPath";
 import { Obj } from "./Obj";
 import { ArrayIndex } from "./ArrayIndex";
 import { ShouldTerminatePathing } from "./ShouldTerminatePathing";
 import { Path } from "./Path";
+import { ToNumber } from "./ToNumber";
 
 type IfExtends<Value, Target, Then> = Value extends Target ? Then : never;
 
@@ -19,31 +19,17 @@ type BuildPathsEndingIn<
 > =
   ShouldTerminatePathing<T, D> extends true
     ? never
-    : T extends readonly unknown[] // Array
-      ? number extends T["length"] // Dynamic array
-        ? // ArrayIndex keeps "0" distinct so autocomplete shows it
-            | IfExtends<
-                ArrayElement<T>,
-                Target,
-                PrependPath<Prefix, ArrayIndex>
-              >
+    : T extends readonly unknown[]
+      ? {
+          [K in ArrayIndex<T>]:
+            | IfExtends<T[ToNumber<K>], Target, PrependPath<Prefix, K>>
             | BuildPathsEndingIn<
-                ArrayElement<T>,
+                T[ToNumber<K>],
                 Target,
                 DecrementDepth<D>,
-                PrependPath<Prefix, ArrayIndex>
-              >
-        : {
-            // Tuple
-            [K in keyof T & `${number}`]:
-              | IfExtends<T[K], Target, PrependPath<Prefix, K>>
-              | BuildPathsEndingIn<
-                  T[K],
-                  Target,
-                  DecrementDepth<D>,
-                  PrependPath<Prefix, K>
-                >;
-          }[keyof T & `${number}`]
+                PrependPath<Prefix, K>
+              >;
+        }[ArrayIndex<T>]
       : T extends Obj
         ? {
             [K in keyof T]:

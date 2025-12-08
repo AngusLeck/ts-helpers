@@ -1,4 +1,4 @@
 /**
  * Extract the element type from an array.
  */
-export type ArrayElement<T> = T extends readonly (infer E)[] ? E : never;
+export type ArrayElement<T extends readonly unknown[]> = T[number];
