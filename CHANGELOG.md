@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/AngusLeck/ts-helpers/compare/v1.6.0...v2.0.0) (2025-12-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* **get:** Path/Get types now have stricter type inference which may require
+updating type guards to accept `unknown` instead of specific nested types.
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+
+### Features
+
+* **get:** improve Path/Get types with depth control and better type safety ([6e59877](https://github.com/AngusLeck/ts-helpers/commit/6e598778292668632796340def7fc2cc86c19c58))
+* suggest first rest index for rest tuple discoverability ([3da5124](https://github.com/AngusLeck/ts-helpers/commit/3da5124bb6bf5ec7c326983e037427ac5d166fda))
+
+
+### Bug Fixes
+
+* GetKey handling of union types ([f0bd904](https://github.com/AngusLeck/ts-helpers/commit/f0bd904eeb57b2ad38dfd8a1488428af280a4388))
+* handle optional tuple elements and rest tuples in GetKey ([b652d1a](https://github.com/AngusLeck/ts-helpers/commit/b652d1a2c05fbe8f6dcc39d695d33692e80c911c))
+* rest tuple path suggestions now show only specific indices ([39692d1](https://github.com/AngusLeck/ts-helpers/commit/39692d1b667df9b4d14d67d87795509df24efbcb))
+* use TupleKeys instead of NumericKeys for rest tuple detection ([43ae5e8](https://github.com/AngusLeck/ts-helpers/commit/43ae5e8d5ca2078c8bb9b508f051da925c6c6381))
+
 ## [1.6.0](https://github.com/AngusLeck/ts-helpers/compare/v1.5.0...v1.6.0) (2025-07-25)
 
 
