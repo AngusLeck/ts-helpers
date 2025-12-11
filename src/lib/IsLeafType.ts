@@ -2,7 +2,7 @@ import { BuiltIn } from "./BuiltIn";
 
 /**
  * Types that should never be recursed into for path generation.
- * Includes primitives, built-in objects, functions, constructors, promises,
+ * Includes primitives, built-in objects, functions, promises,
  * and collection types (Map, Set, WeakMap, WeakSet).
  *
  * Aligned with type-fest's NonRecursiveType for compatibility.
@@ -10,7 +10,6 @@ import { BuiltIn } from "./BuiltIn";
 type NonRecursiveType =
   | BuiltIn
   | ((...args: unknown[]) => unknown) // Functions
-  | (new (...args: unknown[]) => unknown) // Class constructors
   | Promise<unknown>
   | ReadonlyMap<unknown, unknown>
   | Map<unknown, unknown>
