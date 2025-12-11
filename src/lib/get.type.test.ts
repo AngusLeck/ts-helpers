@@ -609,6 +609,24 @@ describe("Edge cases", () => {
       assertExtends<"name", Paths>(true);
       assertExtends<"getValue", Paths>(true);
     });
+
+    it("handles static methods on classes", () => {
+      class MyClass {
+        static staticMethod(): string {
+          return "";
+        }
+        static staticProperty = 42;
+        instanceMethod(): number {
+          return 0;
+        }
+      }
+      // typeof MyClass gives us the constructor/static side
+      type StaticPaths = Path<typeof MyClass, Depth<1>>;
+      assertExtends<"staticMethod", StaticPaths>(true);
+      assertExtends<"staticProperty", StaticPaths>(true);
+      // instance methods should NOT appear on the static side
+      assertExtends<"instanceMethod", StaticPaths>(false);
+    });
   });
 
   describe("branded/nominal types", () => {
