@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0](https://github.com/AngusLeck/ts-helpers/compare/v2.0.0...v2.1.0) (2025-12-11)
+
+
+### Features
+
+* support Path traversal for static class members ([0ab4bbe](https://github.com/AngusLeck/ts-helpers/commit/0ab4bbedeb94be245555587a01563745fbf0eebd))
+
 ## [2.0.0](https://github.com/AngusLeck/ts-helpers/compare/v1.6.0...v2.0.0) (2025-12-08)
 
 
