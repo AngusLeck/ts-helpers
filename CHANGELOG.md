@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.0](https://github.com/AngusLeck/ts-helpers/compare/v2.1.2...v2.2.0) (2025-12-16)
+
+
+### Features
+
+* add ESModule compatibility for dual CJS/ESM builds ([6c6410b](https://github.com/AngusLeck/ts-helpers/commit/6c6410b8547b4fb2d268e7d94fcae9840e83a99e))
+
 ### [2.1.2](https://github.com/AngusLeck/ts-helpers/compare/v2.1.1...v2.1.2) (2025-12-11)
 
 ### [2.1.1](https://github.com/AngusLeck/ts-helpers/compare/v2.1.0...v2.1.1) (2025-12-11)
