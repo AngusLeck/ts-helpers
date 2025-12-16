@@ -1,5 +1,5 @@
-import { assertEqual } from "./testHelpers";
-import { PickPaths } from "./PickPaths";
+import { assertEqual } from "./testHelpers/index.js";
+import { PickPaths } from "./PickPaths.js";
 
 describe("PickPaths", () => {
   it("should pick specified paths and create nested object structure", () => {

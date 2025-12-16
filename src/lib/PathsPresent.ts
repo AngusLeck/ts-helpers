@@ -1,6 +1,6 @@
-import { GET, get } from "./Get";
-import { Narrow } from "./NarrowPath";
-import { Path } from "./Path";
+import { GET, get } from "./Get.js";
+import { Narrow } from "./NarrowPath.js";
+import { Path } from "./Path.js";
 
 export type PathsPresent<T, P extends Path<T>> = Present<T, P>;
 

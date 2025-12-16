@@ -2,16 +2,29 @@
   "name": "@agnsu/ts-helpers",
   "version": "2.1.2",
   "description": "TypeScript helper functions that I wanted to exist.",
+  "type": "module",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
   "module": "build/module/index.js",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./build/module/index.d.ts",
+        "default": "./build/module/index.js"
+      },
+      "require": {
+        "types": "./build/main/index.d.ts",
+        "default": "./build/main/index.js"
+      }
+    }
+  },
   "repository": "https://github.com/AngusLeck/ts-helpers",
   "license": "MIT",
   "keywords": [],
   "scripts": {
     "describe": "npm-scripts-info",
     "build": "run-s clean && run-p build:*",
-    "build:main": "tsc -p tsconfig.json",
+    "build:main": "tsc -p tsconfig.json && echo '{\"type\":\"commonjs\"}' > build/main/package.json",
     "build:module": "tsc -p tsconfig.module.json",
     "fix": "run-s fix:*",
     "fix:prettier": "prettier \"src/**/*.ts\" --write",
@@ -28,18 +41,7 @@
     "clean": "trash build test",
     "validate": "run-s lint test build",
     "prepare-release": "run-s lint test build version-bump",
-    "release": "yarn prepare-release && git push --follow-tags origin main --no-verify && yarn publish --access public --non-interactive",
-    "preinstall": "node -e \"if(process.env.npm_execpath.indexOf('yarn') === -1) throw new Error('ts-get must be installed with Yarn: https://yarnpkg.com/')\""
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "sh -c '[ $(git rev-parse --abbrev-ref HEAD) != \"master\" ] || ./go'"
-    }
-  },
-  "lint-staged": {
-    "*.{json,css,md}": "prettier --write",
-    "./src/**/*.{js,ts}": "eslint --fix --max-warnings 0"
+    "release": "yarn prepare-release && git push --follow-tags origin main --no-verify && yarn publish --access public --non-interactive"
   },
   "jest": {
     "preset": "ts-jest",
@@ -47,7 +49,10 @@
     "testPathIgnorePatterns": [
       "node_modules",
       "build"
-    ]
+    ],
+    "moduleNameMapper": {
+      "^(\\.{1,2}/.*)\\.js$": "$1"
+    }
   },
   "config": {
     "commitizen": {
@@ -61,8 +66,6 @@
     "@bitjson/npm-scripts-info": "^1.0.0",
     "codecov": "^3.8.1",
     "cz-conventional-changelog": "^3.3.0",
-    "husky": "4.3.8",
-    "lint-staged": "10.5.3",
     "npm-run-all": "^4.1.5",
     "standard-version": "^9.1.0",
     "trash-cli": "^4.0.0",

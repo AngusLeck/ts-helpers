@@ -1,8 +1,8 @@
-import { GET } from "./Get";
-import { GetKey } from "./GetKey";
-import { Intersection } from "./Intersection";
-import { Path } from "./Path";
-import { UnionToIntersection } from "./UnionToIntersection";
+import { GET } from "./Get.js";
+import { GetKey } from "./GetKey.js";
+import { Intersection } from "./Intersection.js";
+import { Path } from "./Path.js";
+import { UnionToIntersection } from "./UnionToIntersection.js";
 
 export type NarrowPath<T, P extends Path<T>, V extends GET<T, P>> = Narrow<
   T,

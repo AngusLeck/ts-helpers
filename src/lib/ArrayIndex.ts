@@ -1,6 +1,6 @@
 // prettier-ignore
 
-import { TupleKeys } from "./TupleKeys";
+import { TupleKeys } from "./TupleKeys.js";
 
 /**
  * Increment lookup table for counting fixed tuple elements.

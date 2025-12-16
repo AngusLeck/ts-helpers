@@ -1,4 +1,4 @@
-import { deepTypeGuard, deepAssert } from "./deepAssert";
+import { deepTypeGuard, deepAssert } from "./deepAssert.js";
 
 const isNumber = (val: unknown): val is number => typeof val === "number";
 

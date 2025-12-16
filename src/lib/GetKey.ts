@@ -1,5 +1,5 @@
-import { ToNumber } from "./ToNumber";
-import { TupleKeys } from "./TupleKeys";
+import { ToNumber } from "./ToNumber.js";
+import { TupleKeys } from "./TupleKeys.js";
 
 /**
  * Check if K is a fixed index in tuple T (not part of the rest portion).

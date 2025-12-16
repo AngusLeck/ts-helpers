@@ -1,5 +1,5 @@
-import { Depth } from "./Depth";
-import { PathEndingIn } from "./PathEndingIn";
+import { Depth } from "./Depth.js";
+import { PathEndingIn } from "./PathEndingIn.js";
 
 /**
  * Type representing any function signature.

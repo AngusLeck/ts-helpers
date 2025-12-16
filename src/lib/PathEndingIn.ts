@@ -1,10 +1,10 @@
-import { DecrementDepth, Depth } from "./Depth";
-import { PrependPath } from "./PrependPath";
-import { Obj } from "./Obj";
-import { ArrayIndex } from "./ArrayIndex";
-import { ShouldTerminatePathing } from "./ShouldTerminatePathing";
-import { Path } from "./Path";
-import { ToNumber } from "./ToNumber";
+import { DecrementDepth, Depth } from "./Depth.js";
+import { PrependPath } from "./PrependPath.js";
+import { Obj } from "./Obj.js";
+import { ArrayIndex } from "./ArrayIndex.js";
+import { ShouldTerminatePathing } from "./ShouldTerminatePathing.js";
+import { Path } from "./Path.js";
+import { ToNumber } from "./ToNumber.js";
 
 type IfExtends<Value, Target, Then> = Value extends Target ? Then : never;
 

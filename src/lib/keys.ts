@@ -1,4 +1,4 @@
-import { ToString } from "./ToString";
+import { ToString } from "./ToString.js";
 
 export function keys<T extends Record<string | number, unknown>>(
   obj: T,

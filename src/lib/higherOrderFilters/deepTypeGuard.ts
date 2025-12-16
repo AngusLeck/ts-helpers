@@ -1,6 +1,6 @@
-import { GET, get } from "../Get";
-import { Narrow } from "../NarrowPath";
-import { Path } from "../Path";
+import { GET, get } from "../Get.js";
+import { Narrow } from "../NarrowPath.js";
+import { Path } from "../Path.js";
 
 /**
  * Utilizes a type guard to assert the deep type of a property within a given object based on the specified path.

@@ -1,2 +1,2 @@
-export * from "./assertEqual";
-export * from "./assertExtends";
+export * from "./assertEqual.js";
+export * from "./assertExtends.js";
