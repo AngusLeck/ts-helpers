@@ -5,6 +5,18 @@
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
   "module": "build/module/index.js",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./build/module/index.d.ts",
+        "default": "./build/module/index.js"
+      },
+      "require": {
+        "types": "./build/main/index.d.ts",
+        "default": "./build/main/index.js"
+      }
+    }
+  },
   "repository": "https://github.com/AngusLeck/ts-helpers",
   "license": "MIT",
   "keywords": [],
@@ -28,8 +40,7 @@
     "clean": "trash build test",
     "validate": "run-s lint test build",
     "prepare-release": "run-s lint test build version-bump",
-    "release": "yarn prepare-release && git push --follow-tags origin main --no-verify && yarn publish --access public --non-interactive",
-    "preinstall": "node -e \"if(process.env.npm_execpath.indexOf('yarn') === -1) throw new Error('ts-get must be installed with Yarn: https://yarnpkg.com/')\""
+    "release": "yarn prepare-release && git push --follow-tags origin main --no-verify && yarn publish --access public --non-interactive"
   },
   "husky": {
     "hooks": {
