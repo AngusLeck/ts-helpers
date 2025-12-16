@@ -1,6 +1,6 @@
-import { get } from "../Get";
-import { Path } from "../Path";
-import { Present } from "../PathsPresent";
+import { get } from "../Get.js";
+import { Path } from "../Path.js";
+import { Present } from "../PathsPresent.js";
 
 export function pathsPresent<T, P extends Path<T>>(
   ...paths: P[]

@@ -1,4 +1,4 @@
-import { BuiltIn } from "./BuiltIn";
+import { BuiltIn } from "./BuiltIn.js";
 
 /**
  * Types that should never be recursed into for path generation.

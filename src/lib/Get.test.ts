@@ -1,4 +1,4 @@
-import { get } from "./Get";
+import { get } from "./Get.js";
 
 describe("get", () => {
   it("should return the type of the value at a path of T", () => {

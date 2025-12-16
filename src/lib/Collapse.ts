@@ -1,4 +1,4 @@
-import { Obj } from "./Obj";
+import { Obj } from "./Obj.js";
 
 export type Collapse<T> = T extends Obj
   ? {

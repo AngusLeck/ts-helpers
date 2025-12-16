@@ -1,5 +1,5 @@
-import { IsDepthExhausted } from "./Depth";
-import { IsLeafType } from "./IsLeafType";
+import { IsDepthExhausted } from "./Depth.js";
+import { IsLeafType } from "./IsLeafType.js";
 
 /** Stop if the depth is exhausted or the type is a leaf type. */
 export type ShouldTerminatePathing<T, D extends unknown[]> =

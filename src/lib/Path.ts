@@ -1,9 +1,9 @@
-import { DecrementDepth, Depth } from "./Depth";
-import { ShouldTerminatePathing } from "./ShouldTerminatePathing";
-import { Obj } from "./Obj";
-import { PrependPath } from "./PrependPath";
-import { ToNumber } from "./ToNumber";
-import { ArrayIndex } from "./ArrayIndex";
+import { DecrementDepth, Depth } from "./Depth.js";
+import { ShouldTerminatePathing } from "./ShouldTerminatePathing.js";
+import { Obj } from "./Obj.js";
+import { PrependPath } from "./PrependPath.js";
+import { ToNumber } from "./ToNumber.js";
+import { ArrayIndex } from "./ArrayIndex.js";
 
 /**
  * Internal path builder that recurses through object properties.

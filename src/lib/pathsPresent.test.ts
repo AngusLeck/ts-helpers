@@ -1,5 +1,5 @@
-import { Path } from "./Path";
-import { assertAllPresent, pathsPresent } from "./PathsPresent";
+import { Path } from "./Path.js";
+import { assertAllPresent, pathsPresent } from "./PathsPresent.js";
 
 const testScenarios = [
   {

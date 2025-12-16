@@ -1,9 +1,9 @@
-import { Depth } from "./Depth";
-import { FunctionPath } from "./FunctionPath";
-import { GET, Get } from "./Get";
-import { Path } from "./Path";
-import { PathEndingIn } from "./PathEndingIn";
-import { assertEqual, assertExtends } from "./testHelpers";
+import { Depth } from "./Depth.js";
+import { FunctionPath } from "./FunctionPath.js";
+import { GET, Get } from "./Get.js";
+import { Path } from "./Path.js";
+import { PathEndingIn } from "./PathEndingIn.js";
+import { assertEqual, assertExtends } from "./testHelpers/index.js";
 
 /**
  * Comprehensive test model covering all path generation scenarios.

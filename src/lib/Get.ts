@@ -1,5 +1,5 @@
-import { Path } from "./Path";
-import { GetKey } from "./GetKey";
+import { Path } from "./Path.js";
+import { GetKey } from "./GetKey.js";
 
 /**
  * Like Get returns the type of the value at a path of T.

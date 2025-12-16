@@ -1,7 +1,7 @@
-import { Get } from "./Get";
-import { Path } from "./Path";
-import { UnionToIntersection } from "./UnionToIntersection";
-import { Collapse } from "./Collapse";
+import { Get } from "./Get.js";
+import { Path } from "./Path.js";
+import { UnionToIntersection } from "./UnionToIntersection.js";
+import { Collapse } from "./Collapse.js";
 
 /**
  * Helper type to build nested object structure from a single path
