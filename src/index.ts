@@ -13,3 +13,4 @@ export * from "./lib/NarrowPath.js";
 export * from "./lib/higherOrderFilters/filter.js";
 export * from "./lib/FunctionPath.js";
 export * from "./lib/PathEndingIn.js";
+export * from "./lib/Collapse.js";
